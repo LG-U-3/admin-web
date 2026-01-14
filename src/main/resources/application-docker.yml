@@ -23,10 +23,6 @@ spring:
       ddl-auto: none
     open-in-view: false
 
-  batch:
-    jdbc:
-      initialize-schema: never
-
   data:
     redis:
       host: redis
