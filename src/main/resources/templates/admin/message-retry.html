@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>메시지 재시도 관리</h3>
+        <div class="row">
+          <span class="tag info">실패 메시지 목록</span>
+          <span class="tag info">개별/선택/전체 재시도</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="row" style="justify-content: space-between">
+          <div class="subtle">포인트: 재시도 횟수 표시, 최대 재시도 초과 여부 표시</div>
+          <div class="row">
+            <button class="btn" type="button" data-alert="샘플: 선택 재시도 API 호출">
+              선택 재시도
+            </button>
+            <button class="btn" type="button" data-alert="샘플: 전체 재시도 API 호출">
+              전체 재시도
+            </button>
+            <button class="btn primary" type="button" data-alert="샘플: DLQ 내보내기">
+              최대 초과 분리(DLQ)
+            </button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="nowrap">선택</th>
+                <th class="nowrap">메시지 ID</th>
+                <th class="nowrap">사용자 ID</th>
+                <th class="nowrap">타입</th>
+                <th>템플릿명</th>
+                <th class="nowrap">현재 상태</th>
+                <th class="right nowrap">재시도 횟수</th>
+                <th class="nowrap">최대 초과</th>
+                <th>실패 사유</th>
+                <th class="nowrap">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><input type="checkbox" /></td>
+                <td class="nowrap" style="font-family: var(--mono)">
+                  MSG-20260109-000045
+                </td>
+                <td class="nowrap">user_00008888</td>
+                <td><span class="tag info">SMS</span></td>
+                <td>sms_bill_notice_v2</td>
+                <td><span class="tag warn">재시도 대기</span></td>
+                <td class="right">2</td>
+                <td><span class="tag ok">No</span></td>
+                <td class="muted">Carrier rate limit</td>
+                <td class="nowrap">
+                  <button class="btn primary" type="button" data-alert="샘플: 개별 재시도">
+                    재시도
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td><input type="checkbox" /></td>
+                <td class="nowrap" style="font-family: var(--mono)">
+                  MSG-20260109-000077
+                </td>
+                <td class="nowrap">user_00010101</td>
+                <td><span class="tag info">EMAIL</span></td>
+                <td>monthly_bill_v1</td>
+                <td><span class="tag bad">실패</span></td>
+                <td class="right">5</td>
+                <td><span class="tag bad">Yes</span></td>
+                <td class="muted">Invalid recipient address</td>
+                <td class="nowrap">
+                  <button class="btn" type="button" data-alert="샘플: 주소 수정 유도/재발송">
+                    처리
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div class="page-size">
+            <span>페이지 크기</span>
+            <select>
+              <option>50</option>
+              <option selected>100</option>
+              <option>200</option>
+            </select>
+          </div>
+          <div class="page-info">총 1,240건 중 1-100건</div>
+          <div class="page-nav">
+            <button class="btn" type="button">이전 10</button>
+            <button class="btn active" type="button">1</button>
+            <button class="btn" type="button">2</button>
+            <button class="btn" type="button">3</button>
+            <button class="btn" type="button">4</button>
+            <button class="btn" type="button">5</button>
+            <button class="btn" type="button">6</button>
+            <button class="btn" type="button">7</button>
+            <button class="btn" type="button">8</button>
+            <button class="btn" type="button">9</button>
+            <button class="btn" type="button">10</button>
+            <button class="btn" type="button">다음 10</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="help">
+          권장 정책 예시: 최대 재시도 횟수(N) 초과 시
+          <span class="tag bad">Yes</span> 표기 후 운영자가 별도 처리(주소
+          정정/템플릿 수정/외부 장애 확인)하도록 분리.
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

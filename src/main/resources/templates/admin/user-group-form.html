@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>사용자 그룹 등록/수정</h3>
+        <div class="row">
+          <span class="tag info">그룹 코드/명/설명/요금제</span>
+          <span class="tag info">사용자 검색 후 추가</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="grid" style="gap: 16px; grid-template-columns: repeat(12, 1fr)">
+          <div class="card" style="grid-column: span 5">
+            <div class="hd">
+              <h4>그룹 정보</h4>
+            </div>
+            <div class="bd">
+              <div class="form">
+                <div class="field span-12">
+                  <label>그룹 코드</label>
+                  <input placeholder="예: GRP-VIP-001" />
+                </div>
+                <div class="field span-12">
+                  <label>그룹명</label>
+                  <input placeholder="예: VIP 고객" />
+                </div>
+                <div class="field span-12">
+                  <label>설명</label>
+                  <textarea rows="4" placeholder="그룹 설명을 입력하세요"></textarea>
+                </div>
+                <div class="field span-12">
+                  <label>요금제(선택)</label>
+                  <select>
+                    <option value="">선택 안 함</option>
+                    <option>Basic</option>
+                    <option>Premium</option>
+                    <option>Enterprise</option>
+                    <option>사용자 지정</option>
+                  </select>
+                </div>
+                <div class="field span-12">
+                  <div class="row" style="justify-content: flex-end">
+                    <button class="btn" type="button" data-alert="샘플: 임시 저장">
+                      임시 저장
+                    </button>
+                    <button class="btn primary" type="button" data-alert="샘플: 저장">
+                      저장
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="grid-column: span 7">
+            <div class="hd">
+              <h4>사용자 검색</h4>
+            </div>
+            <div class="bd">
+              <div class="form">
+                <div class="field span-4">
+                  <label>이름</label>
+                  <input placeholder="예: 김민지" />
+                </div>
+                <div class="field span-4">
+                  <label>이메일</label>
+                  <input placeholder="example@sample.com" />
+                </div>
+                <div class="field span-4">
+                  <label>연락처</label>
+                  <input placeholder="010-0000-0000" />
+                </div>
+                <div class="field span-4">
+                  <label>요금제</label>
+                  <select>
+                    <option>전체</option>
+                    <option>Basic</option>
+                    <option>Premium</option>
+                    <option>Enterprise</option>
+                    <option>사용자 지정</option>
+                  </select>
+                </div>
+                <div class="field span-8">
+                  <label>검색어</label>
+                  <input placeholder="이름/이메일/연락처 입력" />
+                </div>
+                <div class="field span-12">
+                  <div class="row" style="justify-content: flex-end">
+                    <button class="btn" type="button" data-alert="샘플: 사용자 검색">
+                      검색
+                    </button>
+                  </div>
+                </div>
+              </div>
+
+              <div class="divider"></div>
+
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="nowrap">이름</th>
+                      <th>이메일</th>
+                      <th class="nowrap">연락처</th>
+                      <th class="nowrap">요금제</th>
+                      <th class="nowrap">액션</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td class="nowrap">김민지</td>
+                      <td>minji.kim@sample.com</td>
+                      <td class="nowrap">010-1234-5678</td>
+                      <td><span class="tag ok">Premium</span></td>
+                      <td class="nowrap">
+                        <button class="btn" type="button" data-alert="샘플: 사용자 추가">
+                          추가
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="nowrap">박준호</td>
+                      <td>junho.park@sample.com</td>
+                      <td class="nowrap">010-1111-2222</td>
+                      <td><span class="tag info">Enterprise</span></td>
+                      <td class="nowrap">
+                        <button class="btn" type="button" data-alert="샘플: 사용자 추가">
+                          추가
+                        </button>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td class="nowrap">이수진</td>
+                      <td>sujin.lee@sample.com</td>
+                      <td class="nowrap">010-3333-4444</td>
+                      <td><span class="tag warn">사용자 지정</span></td>
+                      <td class="nowrap">
+                        <button class="btn" type="button" data-alert="샘플: 사용자 추가">
+                          추가
+                        </button>
+                      </td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="pagination">
+                <div class="page-size">
+                  <span>페이지 크기</span>
+                  <select>
+                    <option>50</option>
+                    <option selected>100</option>
+                    <option>200</option>
+                  </select>
+                </div>
+                <div class="page-info">총 1,240건 중 1-100건</div>
+                <div class="page-nav">
+                  <button class="btn" type="button">이전 10</button>
+                  <button class="btn active" type="button">1</button>
+                  <button class="btn" type="button">2</button>
+                  <button class="btn" type="button">3</button>
+                  <button class="btn" type="button">4</button>
+                  <button class="btn" type="button">5</button>
+                  <button class="btn" type="button">6</button>
+                  <button class="btn" type="button">7</button>
+                  <button class="btn" type="button">8</button>
+                  <button class="btn" type="button">9</button>
+                  <button class="btn" type="button">10</button>
+                  <button class="btn" type="button">다음 10</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="card">
+          <div class="hd">
+            <h4>선택된 사용자 리스트</h4>
+          </div>
+          <div class="bd">
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th class="nowrap">이름</th>
+                    <th>이메일</th>
+                    <th class="nowrap">연락처</th>
+                    <th class="nowrap">요금제</th>
+                    <th class="nowrap">액션</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="nowrap">김민지</td>
+                    <td>minji.kim@sample.com</td>
+                    <td class="nowrap">010-1234-5678</td>
+                    <td><span class="tag ok">Premium</span></td>
+                    <td class="nowrap">
+                      <button class="btn" type="button" data-alert="샘플: 리스트 제거">
+                        제거
+                      </button>
+                    </td>
+                  </tr>
+                  <tr>
+                    <td class="nowrap">박준호</td>
+                    <td>junho.park@sample.com</td>
+                    <td class="nowrap">010-1111-2222</td>
+                    <td><span class="tag info">Enterprise</span></td>
+                    <td class="nowrap">
+                      <button class="btn" type="button" data-alert="샘플: 리스트 제거">
+                        제거
+                      </button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <div class="pagination">
+              <div class="page-size">
+                <span>페이지 크기</span>
+                <select>
+                  <option>50</option>
+                  <option selected>100</option>
+                  <option>200</option>
+                </select>
+              </div>
+              <div class="page-info">총 1,240건 중 1-100건</div>
+              <div class="page-nav">
+                <button class="btn" type="button">이전 10</button>
+                <button class="btn active" type="button">1</button>
+                <button class="btn" type="button">2</button>
+                <button class="btn" type="button">3</button>
+                <button class="btn" type="button">4</button>
+                <button class="btn" type="button">5</button>
+                <button class="btn" type="button">6</button>
+                <button class="btn" type="button">7</button>
+                <button class="btn" type="button">8</button>
+                <button class="btn" type="button">9</button>
+                <button class="btn" type="button">10</button>
+                <button class="btn" type="button">다음 10</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row" style="justify-content: space-between">
+          <a class="btn" th:href="@{/admin/user-groups}">목록으로</a>
+          <div class="row">
+            <button class="btn" type="button" data-alert="샘플: 수정 취소">
+              취소
+            </button>
+            <button class="btn primary" type="button" data-alert="샘플: 그룹 저장">
+              저장
+            </button>
+            <button class="btn bad" type="button" data-alert="샘플: 그룹 삭제">
+              삭제
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

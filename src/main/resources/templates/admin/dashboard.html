@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="grid cols-2">
+      <div class="card">
+        <div class="hd">
+          <h3>이번 달 정산 배치 상태</h3>
+          <div class="row">
+            <span class="tag info">정산월: 2026-01</span>
+            <span class="status s-ok"><span class="dot"></span> 완료</span>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="grid cols-4">
+            <div class="metric">
+              <div class="label">실행 여부</div>
+              <div class="value">Yes</div>
+              <div class="hint">중복 실행 방지: 활성</div>
+            </div>
+            <div class="metric">
+              <div class="label">처리 건수</div>
+              <div class="value">1,000,000</div>
+              <div class="hint">사용자 기준</div>
+            </div>
+            <div class="metric">
+              <div class="label">성공 건수</div>
+              <div class="value" style="color: var(--ok)">999,120</div>
+              <div class="hint">정산 결과 적재 성공</div>
+            </div>
+            <div class="metric">
+              <div class="label">실패 건수</div>
+              <div class="value" style="color: var(--bad)">880</div>
+              <div class="hint">원인 분석 필요</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <div class="row" style="justify-content: space-between">
+            <div class="subtle">
+              실행 시간: <span class="kbd">2026-01-09 02:00:11</span> ~
+              <span class="kbd">2026-01-09 02:18:44</span>
+            </div>
+            <a class="btn" th:href="@{/admin/batch}">배치 상세 보기</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="hd">
+          <h3>메시지 발송 현황 요약</h3>
+          <div class="row">
+            <span class="tag info">기간: 이번 달</span>
+            <span class="status s-warn"><span class="dot"></span> 실패/재시도 존재</span>
+          </div>
+        </div>
+        <div class="bd">
+          <div class="grid cols-4">
+            <div class="metric">
+              <div class="label">총 발송 건수</div>
+              <div class="value">1,000,000</div>
+              <div class="hint">EMAIL + SMS</div>
+            </div>
+            <div class="metric">
+              <div class="label">성공</div>
+              <div class="value" style="color: var(--ok)">989,420</div>
+              <div class="hint">전송 성공</div>
+            </div>
+            <div class="metric">
+              <div class="label">실패</div>
+              <div class="value" style="color: var(--bad)">9,880</div>
+              <div class="hint">재시도 대상 포함</div>
+            </div>
+            <div class="metric">
+              <div class="label">재시도 대기</div>
+              <div class="value" style="color: var(--warn)">700</div>
+              <div class="hint">Queue 대기</div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+            <div>
+              <div class="subtle" style="margin-bottom: 8px">
+                최근 메시지 실패 Top 5
+              </div>
+              <div class="table-wrap">
+                <table>
+                  <thead>
+                    <tr>
+                      <th class="nowrap">순위</th>
+                      <th>템플릿</th>
+                      <th>타입</th>
+                      <th>실패 사유</th>
+                      <th class="right nowrap">건수</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>1</td>
+                      <td>monthly_bill_v1</td>
+                      <td><span class="tag info">EMAIL</span></td>
+                      <td class="muted">SMTP 4xx (temporary failure)</td>
+                      <td class="right">4,210</td>
+                    </tr>
+                    <tr>
+                      <td>2</td>
+                      <td>sms_bill_notice_v2</td>
+                      <td><span class="tag info">SMS</span></td>
+                      <td class="muted">Carrier rate limit</td>
+                      <td class="right">2,180</td>
+                    </tr>
+                    <tr>
+                      <td>3</td>
+                      <td>monthly_bill_v1</td>
+                      <td><span class="tag info">EMAIL</span></td>
+                      <td class="muted">Invalid recipient address</td>
+                      <td class="right">1,030</td>
+                    </tr>
+                    <tr>
+                      <td>4</td>
+                      <td>sms_bill_notice_v2</td>
+                      <td><span class="tag info">SMS</span></td>
+                      <td class="muted">Timeout</td>
+                      <td class="right">890</td>
+                    </tr>
+                    <tr>
+                      <td>5</td>
+                      <td>monthly_bill_v2</td>
+                      <td><span class="tag info">EMAIL</span></td>
+                      <td class="muted">Template render error</td>
+                      <td class="right">520</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="pagination">
+                <div class="page-size">
+                  <span>페이지 크기</span>
+                  <select>
+                    <option>50</option>
+                    <option selected>100</option>
+                    <option>200</option>
+                  </select>
+                </div>
+                <div class="page-info">총 1,240건 중 1-100건</div>
+                <div class="page-nav">
+                  <button class="btn" type="button">이전 10</button>
+                  <button class="btn active" type="button">1</button>
+                  <button class="btn" type="button">2</button>
+                  <button class="btn" type="button">3</button>
+                  <button class="btn" type="button">4</button>
+                  <button class="btn" type="button">5</button>
+                  <button class="btn" type="button">6</button>
+                  <button class="btn" type="button">7</button>
+                  <button class="btn" type="button">8</button>
+                  <button class="btn" type="button">9</button>
+                  <button class="btn" type="button">10</button>
+                  <button class="btn" type="button">다음 10</button>
+                </div>
+              </div>
+              <div class="row" style="justify-content: flex-end; margin-top: 10px">
+                <a class="btn" th:href="@{/admin/messages/history}">이력 조회로 이동</a>
+                <a class="btn primary" th:href="@{/admin/messages/retry}">재시도 관리로 이동</a>
+              </div>
+            </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

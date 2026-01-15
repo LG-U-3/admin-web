@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+  th:fragment="layout(title, pageTitle, activeKey, pageStatus, content)">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title th:text="${title}">Billing System Admin - 운영 현황 / 관리</title>
+    <link rel="stylesheet" th:href="@{/css/demo.css}" />
+  </head>
+
+  <body>
+    <div class="app">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="logo">BS</div>
+          <div>
+            <h1>대용량 요금 명세서/알림 발송</h1>
+            <p>Admin Console · 운영 현황/관리</p>
+          </div>
+        </div>
+
+        <nav class="nav" id="nav">
+          <div class="group-title">정산</div>
+          <a class="nav-link"
+            th:classappend="${activeKey == 'batch'} ? ' active'"
+            th:href="@{/admin/batch}">
+            <span>정산 배치 실행/관리</span><span class="pill">Batch</span>
+          </a>
+          <a class="nav-link"
+            th:classappend="${activeKey == 'settlement'} ? ' active'"
+            th:href="@{/admin/settlement}">
+            <span>정산서 데이터 조회</span><span class="pill">Billing</span>
+          </a>
+
+          <div class="group-title">메시지</div>
+          <a class="nav-link"
+            th:classappend="${activeKey == 'message-history'} ? ' active'"
+            th:href="@{/admin/messages/history}">
+            <span>메시지 발송 이력 조회</span><span class="pill">History</span>
+          </a>
+          <a class="nav-link"
+            th:classappend="${activeKey == 'message-retry'} ? ' active'"
+            th:href="@{/admin/messages/retry}">
+            <span>메시지 재시도 관리</span><span class="pill">Retry</span>
+          </a>
+
+          <div class="group-title">템플릿</div>
+          <a class="nav-link"
+            th:classappend="${activeKey == 'templates'} ? ' active'"
+            th:href="@{/admin/templates}">
+            <span>템플릿 목록</span><span class="pill">Template</span>
+          </a>
+
+          <div class="group-title">사용자그룹</div>
+          <a class="nav-link"
+            th:classappend="${activeKey == 'user-group-list'} ? ' active'"
+            th:href="@{/admin/user-groups}">
+            <span>사용자 그룹 목록</span><span class="pill">Groups</span>
+          </a>
+
+          <div class="group-title">예약발송</div>
+          <a class="nav-link"
+            th:classappend="${activeKey == 'schedule-list'} ? ' active'"
+            th:href="@{/admin/schedule}">
+            <span>예약 발송 목록</span><span class="pill">Schedule</span>
+          </a>
+        </nav>
+
+        <div class="divider"></div>
+        <div class="subtle">
+          <div class="row" style="justify-content: space-between">
+            <span>환경</span>
+            <span class="tag info">DEV</span>
+          </div>
+          <div class="row" style="justify-content: space-between; margin-top: 8px">
+            <span>서버 시간</span>
+            <span class="kbd" id="now">-</span>
+          </div>
+        </div>
+      </aside>
+
+      <main class="main">
+        <div class="topbar">
+          <div class="left">
+            <h2 th:text="${pageTitle}">관리자 대시보드</h2>
+            <div class="meta">
+              <span class="status s-info">
+                <span class="dot"></span>
+                <span th:text="${pageStatus}">실시간 운영 요약</span>
+              </span>
+              <span class="kbd">⌘/Ctrl + K</span
+              ><span class="muted">빠른 검색(샘플)</span>
+            </div>
+          </div>
+          <div class="actions">
+            <button class="btn" type="button" data-alert="샘플: 새로고침 API 호출">
+              새로고침
+            </button>
+          </div>
+        </div>
+
+        <div th:replace="${content}"></div>
+      </main>
+    </div>
+
+    <script th:src="@{/js/demo.js}"></script>
+  </body>
+</html>

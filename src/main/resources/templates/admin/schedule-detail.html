@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>예약 발송 상세</h3>
+        <div class="row">
+          <span class="tag info">예약 ID: SCH-20260109-0001</span>
+          <span class="tag warn">대기</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="grid" style="gap: 16px; grid-template-columns: repeat(12, 1fr)">
+          <div class="card" style="grid-column: span 6">
+            <div class="hd">
+              <h4>예약 정보</h4>
+            </div>
+            <div class="bd">
+              <div class="form">
+                <div class="field span-12">
+                  <label>예약 ID</label>
+                  <input value="SCH-20260109-0001" disabled />
+                </div>
+                <div class="field span-12">
+                  <label>상태</label>
+                  <select disabled>
+                    <option selected>대기</option>
+                    <option>완료</option>
+                    <option>취소</option>
+                  </select>
+                </div>
+                <div class="field span-12">
+                  <label>발송 예정 시간</label>
+                  <input value="2026-01-10 09:00" disabled />
+                </div>
+                <div class="field span-12">
+                  <label>등록 시간</label>
+                  <input value="2026-01-09 18:45" disabled />
+                </div>
+                <div class="field span-12">
+                  <label>수정 시간</label>
+                  <input value="2026-01-09 19:10" disabled />
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" style="grid-column: span 6">
+            <div class="hd">
+              <h4>발송 대상/템플릿</h4>
+            </div>
+            <div class="bd">
+              <div class="form">
+                <div class="field span-12">
+                  <label>대상 그룹</label>
+                  <input value="VIP" disabled />
+                </div>
+                <div class="field span-12">
+                  <label>템플릿명</label>
+                  <input value="monthly_bill_v1" disabled />
+                </div>
+                <div class="field span-12">
+                  <label>템플릿 타입</label>
+                  <input value="EMAIL" disabled />
+                </div>
+                <div class="field span-12">
+                  <label>대상 예상 건수</label>
+                  <input value="12,420건" disabled />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="card">
+          <div class="hd">
+            <h4>운영 메모</h4>
+          </div>
+          <div class="bd">
+            <textarea rows="4" disabled>VIP 대상 월별 정산 안내 / 야간 배치 완료 후 발송 예정</textarea>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="row" style="justify-content: flex-end">
+          <a class="btn" th:href="@{/admin/schedule}">목록</a>
+          <button class="btn" type="button" data-alert="샘플: 예약 취소">
+            취소
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

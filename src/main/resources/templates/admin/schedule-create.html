@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>예약 발송 등록</h3>
+        <div class="row">
+          <span class="tag info">대상 그룹 선택</span>
+          <span class="tag info">템플릿 선택</span>
+          <span class="tag info">발송 예정 일시 설정</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="form">
+          <div class="field span-6">
+            <label>대상 사용자 그룹</label>
+            <select>
+              <option>ALL (전체)</option>
+              <option>VIP</option>
+              <option>Segment-A</option>
+              <option>Segment-B</option>
+            </select>
+            <div class="help">
+              실제 구현에서는 그룹 정의/필터(요금제/지역/가입기간 등) 구성 가능.
+            </div>
+          </div>
+          <div class="field span-6">
+            <label>템플릿 선택</label>
+            <select>
+              <option>monthly_bill_v1 (EMAIL)</option>
+              <option>sms_bill_notice_v2 (SMS)</option>
+              <option>monthly_bill_v2 (EMAIL)</option>
+            </select>
+          </div>
+
+          <div class="field span-6">
+            <label>발송 예정 일시</label>
+            <input type="datetime-local" value="2026-01-10T09:00" />
+          </div>
+          <div class="field span-6">
+            <label>상태</label>
+            <select>
+              <option selected>대기</option>
+              <option>취소</option>
+            </select>
+          </div>
+
+          <div class="field span-12">
+            <label>메모(운영자용)</label>
+            <textarea
+              placeholder="예: VIP 대상 월별 정산 안내 / 장애 복구 후 재공지"
+            ></textarea>
+          </div>
+
+          <div class="field span-12">
+            <div class="row" style="justify-content: flex-end">
+              <a class="btn" th:href="@{/admin/schedule}">목록</a>
+              <button class="btn primary" type="button" data-alert="샘플: 예약 생성 API 호출">
+                예약 등록
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="help">
+          예약 발송 처리 흐름 예시: Scheduler가 예약 테이블을 폴링/트리거 → Queue
+          적재 → 메시지 워커 발송 → 결과 이력 적재.
+        </div>
+      </div>
+    </div>
+  </section>
+</html>
