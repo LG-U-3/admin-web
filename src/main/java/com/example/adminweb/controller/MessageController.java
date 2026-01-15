@@ -1,7 +1,7 @@
 package com.example.adminweb.controller;
 
-import com.example.adminweb.message.MessageProducer;
 import org.springframework.web.bind.annotation.*;
+import com.example.adminweb.producer.MessageProducer;
 
 @RestController
 @RequestMapping("/message")
