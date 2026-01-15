@@ -8,26 +8,31 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "code_groups",
-       uniqueConstraints = @UniqueConstraint(
-               name = "uk_code_groups_code",
-               columnNames = "code"
-       ))
+@Table(
+    name = "code_groups",
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = "code")
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class CodeGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false, length = 50)
+    @Column(length = 50, nullable = false)
     private String code;
 
-    @Column(nullable = false, length = 100)
+    @Column(length = 100, nullable = false)
     private String name;
 }

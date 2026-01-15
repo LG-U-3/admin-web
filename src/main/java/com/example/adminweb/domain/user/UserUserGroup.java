@@ -1,4 +1,4 @@
-package com.example.adminweb.domain.code;
+package com.example.adminweb.domain.user;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -10,30 +10,30 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "codes")
+@Table(name = "user_user_groups")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
-@Builder
-public class Code {
+public class UserUserGroup {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(length = 50, nullable = false)
-    private String code;
-
-    @Column(length = 100, nullable = false)
-    private String name;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "group_id", nullable = false)
-    private CodeGroup codeGroup;
+    private UserGroup userGroup;
+
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
+    @Builder
+    private UserUserGroup(UserGroup userGroup, Long userId) {
+        this.userGroup = userGroup;
+        this.userId = userId;
+    }
 }

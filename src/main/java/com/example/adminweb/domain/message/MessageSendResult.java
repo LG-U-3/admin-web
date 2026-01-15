@@ -1,24 +1,28 @@
 package com.example.adminweb.domain.message;
 
+import com.example.adminweb.domain.code.Code;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
-import com.example.adminweb.domain.code.Code;
-import com.example.adminweb.domain.user.User;
+
 import java.time.LocalDateTime;
 
 @Entity
-@Table(name = "message_send_results",
-       indexes = {
-               @Index(name = "idx_msr_status_requested", columnList = "status_id, requested_at"),
-               @Index(name = "idx_msr_template", columnList = "template_id"),
-               @Index(name = "idx_msr_user", columnList = "user_id"),
-               @Index(name = "idx_msr_reserved", columnList = "reserved_send_id"),
-               @Index(name = "idx_msr_channel", columnList = "channel_id")
-       })
+@Table(
+    name = "message_send_results",
+    indexes = {
+        @Index(
+            name = "idx_msr_status_requested",
+            columnList = "status_id, requested_at"
+        ),
+        @Index(
+            name = "idx_msr_template",
+            columnList = "template_id"
+        )
+    }
+)
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MessageSendResult {
@@ -31,9 +35,8 @@ public class MessageSendResult {
     @JoinColumn(name = "reserved_send_id", nullable = false)
     private MessageReservation reservation;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
-    private User user;
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "channel_id", nullable = false)
@@ -47,24 +50,33 @@ public class MessageSendResult {
     @JoinColumn(name = "status_id", nullable = false)
     private Code status;
 
-    @CreationTimestamp
-    @Column(nullable = false, updatable = false)
+    @Column(name = "requested_at", nullable = false)
     private LocalDateTime requestedAt;
 
+    @Column(name = "processed_at")
     private LocalDateTime processedAt;
 
-    @Column(nullable = false)
+    @Column(name = "retry_count", nullable = false)
     private int retryCount;
 
     @Builder
-    private MessageSendResult(MessageReservation reservation, User user,
-                              Code channel, MessageTemplate template,
-                              Code status, int retryCount) {
+    private MessageSendResult(
+            MessageReservation reservation,
+            Long userId,
+            Code channel,
+            MessageTemplate template,
+            Code status,
+            LocalDateTime requestedAt,
+            LocalDateTime processedAt,
+            int retryCount
+    ) {
         this.reservation = reservation;
-        this.user = user;
+        this.userId = userId;
         this.channel = channel;
         this.template = template;
         this.status = status;
+        this.requestedAt = requestedAt;
+        this.processedAt = processedAt;
         this.retryCount = retryCount;
     }
 }
