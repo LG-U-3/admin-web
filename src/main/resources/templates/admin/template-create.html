@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>템플릿 등록</h3>
+        <div class="row">
+          <span class="tag info">제목(EMAIL) / 본문 / 변수 목록 / 미리보기</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="form">
+          <div class="field span-4">
+            <label>템플릿 타입</label>
+            <select id="tplType">
+              <option value="EMAIL" selected>EMAIL</option>
+              <option value="SMS">SMS</option>
+            </select>
+          </div>
+          <div class="field span-4">
+            <label>템플릿명</label>
+            <input placeholder="예: monthly_bill_v3" />
+          </div>
+          <div class="field span-4">
+            <label>사용 여부</label>
+            <select>
+              <option selected>사용</option>
+              <option>미사용</option>
+            </select>
+          </div>
+
+          <div class="field span-12" id="emailSubjectField">
+            <label>제목 (이메일)</label>
+            <input placeholder="[요금명세서] {billingMonth}월 청구 금액 안내" />
+          </div>
+
+          <div class="field span-12">
+            <label>본문</label>
+            <textarea id="tplBody" placeholder="템플릿 본문을 입력해주세요."></textarea>
+          </div>
+
+          <div class="field span-6">
+            <label>변수 목록</label>
+            <div class="code">
+              {userName} {billingMonth} {usageAmount} {discountAmount} {amount}
+            </div>
+            <div class="help">
+              변수 치환은 서버에서 템플릿 엔진(예: Thymeleaf, Freemarker 등) 또는
+              자체 치환 로직으로 처리.
+            </div>
+          </div>
+
+          <div class="field span-6">
+            <label>미리보기</label>
+            <div class="code" id="previewBox"></div>
+            <div class="row" style="justify-content: flex-end; margin-top: 10px">
+              <button class="btn" type="button" data-action="preview">
+                미리보기 갱신
+              </button>
+            </div>
+          </div>
+
+          <div class="field span-12">
+            <div class="row" style="justify-content: flex-end">
+              <a class="btn" th:href="@{/admin/templates}">목록</a>
+              <button class="btn primary" type="button" data-alert="샘플: 저장 API 호출">
+                등록
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

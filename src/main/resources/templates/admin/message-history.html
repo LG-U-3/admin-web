@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>메시지 발송 이력 조회</h3>
+        <div class="row">
+          <span class="tag info">EMAIL / SMS</span>
+          <span class="tag info">성공 / 실패 / 재시도 대기</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="form">
+          <div class="field span-3">
+            <label>기간 시작</label>
+            <input type="date" value="2026-01-01" />
+          </div>
+          <div class="field span-3">
+            <label>기간 종료</label>
+            <input type="date" value="2026-01-09" />
+          </div>
+          <div class="field span-3">
+            <label>메시지 타입</label>
+            <select>
+              <option>전체</option>
+              <option>EMAIL</option>
+              <option>SMS</option>
+            </select>
+          </div>
+          <div class="field span-3">
+            <label>발송 상태</label>
+            <select>
+              <option>전체</option>
+              <option>성공</option>
+              <option>실패</option>
+              <option>재시도 대기</option>
+            </select>
+          </div>
+          <div class="field span-6">
+            <label>사용자 ID</label>
+            <input placeholder="예: user_00001234" />
+          </div>
+          <div class="field span-6">
+            <label>템플릿명</label>
+            <input placeholder="예: monthly_bill_v1" />
+          </div>
+          <div class="field span-12">
+            <div class="row" style="justify-content: flex-end">
+              <button class="btn" type="button" data-alert="샘플: 검색 API 호출">
+                검색
+              </button>
+              <button class="btn primary" type="button" data-alert="샘플: 엑셀 다운로드">
+                엑셀 다운로드
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="nowrap">메시지 ID</th>
+                <th class="nowrap">사용자 ID</th>
+                <th class="nowrap">타입</th>
+                <th>템플릿명</th>
+                <th class="nowrap">발송 상태</th>
+                <th class="nowrap">발송 시각</th>
+                <th>실패 사유</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">
+                  MSG-20260109-000001
+                </td>
+                <td class="nowrap">user_00001234</td>
+                <td><span class="tag info">EMAIL</span></td>
+                <td>monthly_bill_v1</td>
+                <td><span class="tag ok">성공</span></td>
+                <td class="nowrap">2026-01-09 02:20:11</td>
+                <td class="muted">-</td>
+              </tr>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">
+                  MSG-20260109-000045
+                </td>
+                <td class="nowrap">user_00008888</td>
+                <td><span class="tag info">SMS</span></td>
+                <td>sms_bill_notice_v2</td>
+                <td><span class="tag warn">재시도 대기</span></td>
+                <td class="nowrap">2026-01-09 02:22:03</td>
+                <td class="muted">Carrier rate limit</td>
+              </tr>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">
+                  MSG-20260109-000077
+                </td>
+                <td class="nowrap">user_00010101</td>
+                <td><span class="tag info">EMAIL</span></td>
+                <td>monthly_bill_v1</td>
+                <td><span class="tag bad">실패</span></td>
+                <td class="nowrap">2026-01-09 02:22:49</td>
+                <td class="muted">Invalid recipient address</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div class="page-size">
+            <span>페이지 크기</span>
+            <select>
+              <option>50</option>
+              <option selected>100</option>
+              <option>200</option>
+            </select>
+          </div>
+          <div class="page-info">총 1,240건 중 1-100건</div>
+          <div class="page-nav">
+            <button class="btn" type="button">이전 10</button>
+            <button class="btn active" type="button">1</button>
+            <button class="btn" type="button">2</button>
+            <button class="btn" type="button">3</button>
+            <button class="btn" type="button">4</button>
+            <button class="btn" type="button">5</button>
+            <button class="btn" type="button">6</button>
+            <button class="btn" type="button">7</button>
+            <button class="btn" type="button">8</button>
+            <button class="btn" type="button">9</button>
+            <button class="btn" type="button">10</button>
+            <button class="btn" type="button">다음 10</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

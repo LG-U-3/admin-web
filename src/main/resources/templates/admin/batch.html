@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>정산 배치 실행/관리</h3>
+        <div class="row">
+          <span class="status s-info"><span class="dot"></span> 월별 실행</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="form">
+          <div class="field span-4">
+            <label>정산 월</label>
+            <input type="month" value="2026-01" />
+          </div>
+          <div class="field span-4">
+            <label>실행 옵션</label>
+            <select>
+              <option>일반 실행</option>
+              <option>재처리(실패 건만)</option>
+              <option>드라이런(검증)</option>
+            </select>
+          </div>
+          <div class="field span-4">
+            <label>실행 제어</label>
+            <div class="row">
+              <button class="btn primary" type="button" data-alert="샘플: 월별 배치 실행 API 호출">
+                배치 실행
+              </button>
+              <button class="btn" type="button" data-alert="샘플: 실행 중지 요청">
+                중지 요청
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="subtle" style="margin-bottom: 8px">배치 실행 목록</div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="nowrap">정산 월</th>
+                <th class="nowrap">실행 시작</th>
+                <th class="nowrap">실행 종료</th>
+                <th class="right nowrap">처리 건수</th>
+                <th class="right nowrap">성공</th>
+                <th class="right nowrap">실패</th>
+                <th class="nowrap">상태</th>
+                <th class="nowrap">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2026-01</td>
+                <td class="nowrap">2026-01-09 02:00:11</td>
+                <td class="nowrap">2026-01-09 02:18:44</td>
+                <td class="right">1,000,000</td>
+                <td class="right">999,120</td>
+                <td class="right">880</td>
+                <td><span class="tag ok">완료</span></td>
+                <td class="nowrap">
+                  <button class="btn" type="button" data-alert="샘플: 재처리 트리거">
+                    재처리
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>2025-12</td>
+                <td class="nowrap">2025-12-01 02:00:02</td>
+                <td class="nowrap">2025-12-01 02:16:11</td>
+                <td class="right">1,000,000</td>
+                <td class="right">999,500</td>
+                <td class="right">500</td>
+                <td><span class="tag ok">완료</span></td>
+                <td class="nowrap">
+                  <button class="btn" type="button" data-alert="샘플: 재처리 트리거">
+                    재처리
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>2025-11</td>
+                <td class="nowrap">2025-11-01 02:00:00</td>
+                <td class="nowrap">2025-11-01 02:05:21</td>
+                <td class="right">1,000,000</td>
+                <td class="right">0</td>
+                <td class="right">0</td>
+                <td><span class="tag warn">중단</span></td>
+                <td class="nowrap">
+                  <button class="btn primary" type="button" data-alert="샘플: 재실행">
+                    재실행
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>2025-10</td>
+                <td class="nowrap">2025-10-01 02:00:10</td>
+                <td class="nowrap">2025-10-01 02:19:02</td>
+                <td class="right">1,000,000</td>
+                <td class="right">999,920</td>
+                <td class="right">80</td>
+                <td><span class="tag ok">완료</span></td>
+                <td class="nowrap">
+                  <button class="btn" type="button" data-alert="샘플: 재처리 트리거">
+                    재처리
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div class="page-size">
+            <span>페이지 크기</span>
+            <select>
+              <option>50</option>
+              <option selected>100</option>
+              <option>200</option>
+            </select>
+          </div>
+          <div class="page-info">총 1,240건 중 1-100건</div>
+          <div class="page-nav">
+            <button class="btn" type="button">이전 10</button>
+            <button class="btn active" type="button">1</button>
+            <button class="btn" type="button">2</button>
+            <button class="btn" type="button">3</button>
+            <button class="btn" type="button">4</button>
+            <button class="btn" type="button">5</button>
+            <button class="btn" type="button">6</button>
+            <button class="btn" type="button">7</button>
+            <button class="btn" type="button">8</button>
+            <button class="btn" type="button">9</button>
+            <button class="btn" type="button">10</button>
+            <button class="btn" type="button">다음 10</button>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="help">
+          상태 정의 예시: <span class="tag info">실행 중</span> /
+          <span class="tag ok">완료</span> /
+          <span class="tag bad">실패</span> /
+          <span class="tag warn">중단</span>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

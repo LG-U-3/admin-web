@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>정산서 데이터 조회</h3>
+        <div class="row">
+          <span class="tag info">월별 정산 결과 리스트</span>
+          <span class="tag info">사용자별 요금 조회</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="form">
+          <div class="field span-3">
+            <label>정산 월</label>
+            <input type="month" value="2026-01" />
+          </div>
+          <div class="field span-3">
+            <label>사용자 ID</label>
+            <input placeholder="예: user_00001234" />
+          </div>
+          <div class="field span-3">
+            <label>고객 번호</label>
+            <input placeholder="예: CUST-102938" />
+          </div>
+          <div class="field span-3">
+            <label>정산 상태</label>
+            <select>
+              <option>전체</option>
+              <option>정산 완료</option>
+              <option>정산 실패</option>
+              <option>정산 진행 중</option>
+            </select>
+          </div>
+          <div class="field span-12">
+            <div class="row" style="justify-content: flex-end">
+              <button class="btn" type="button" data-alert="샘플: 검색 API 호출">
+                검색
+              </button>
+              <button class="btn primary" type="button" data-alert="샘플: CSV 다운로드">
+                CSV 다운로드
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="nowrap">정산 월</th>
+                <th class="nowrap">사용자 ID</th>
+                <th class="right nowrap">사용 요금</th>
+                <th class="right nowrap">할인 요금</th>
+                <th class="right nowrap">최종 청구 금액</th>
+                <th class="nowrap">정산 상태</th>
+                <th class="nowrap">상세</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>2026-01</td>
+                <td class="nowrap">user_00001234</td>
+                <td class="right">52,000</td>
+                <td class="right">-5,000</td>
+                <td class="right"><strong>47,000</strong></td>
+                <td><span class="tag ok">정산 완료</span></td>
+                <td class="nowrap">
+                  <button class="btn" type="button" data-alert="샘플: 사용자 청구 상세 팝업">
+                    조회
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>2026-01</td>
+                <td class="nowrap">user_00008888</td>
+                <td class="right">120,000</td>
+                <td class="right">-20,000</td>
+                <td class="right"><strong>100,000</strong></td>
+                <td><span class="tag ok">정산 완료</span></td>
+                <td class="nowrap">
+                  <button class="btn" type="button" data-alert="샘플: 사용자 청구 상세 팝업">
+                    조회
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td>2026-01</td>
+                <td class="nowrap">user_00010101</td>
+                <td class="right">30,000</td>
+                <td class="right">-0</td>
+                <td class="right"><strong>30,000</strong></td>
+                <td><span class="tag bad">정산 실패</span></td>
+                <td class="nowrap">
+                  <button class="btn" type="button" data-alert="샘플: 실패 원인/재처리 안내">
+                    조회
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div class="page-size">
+            <span>페이지 크기</span>
+            <select>
+              <option>50</option>
+              <option selected>100</option>
+              <option>200</option>
+            </select>
+          </div>
+          <div class="page-info">총 1,240건 중 1-100건</div>
+          <div class="page-nav">
+            <button class="btn" type="button">이전 10</button>
+            <button class="btn active" type="button">1</button>
+            <button class="btn" type="button">2</button>
+            <button class="btn" type="button">3</button>
+            <button class="btn" type="button">4</button>
+            <button class="btn" type="button">5</button>
+            <button class="btn" type="button">6</button>
+            <button class="btn" type="button">7</button>
+            <button class="btn" type="button">8</button>
+            <button class="btn" type="button">9</button>
+            <button class="btn" type="button">10</button>
+            <button class="btn" type="button">다음 10</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

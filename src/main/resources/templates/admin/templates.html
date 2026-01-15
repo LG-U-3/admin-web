@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>템플릿 목록</h3>
+        <div class="row">
+          <span class="tag info">EMAIL / SMS</span>
+          <span class="tag info">사용 여부 / 등록일</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="form">
+          <div class="field span-4">
+            <label>타입</label>
+            <select>
+              <option>전체</option>
+              <option>EMAIL</option>
+              <option>SMS</option>
+            </select>
+          </div>
+          <div class="field span-4">
+            <label>사용 여부</label>
+            <select>
+              <option>전체</option>
+              <option>사용</option>
+              <option>미사용</option>
+            </select>
+          </div>
+          <div class="field span-4">
+            <label>템플릿명</label>
+            <input placeholder="키워드 검색" />
+          </div>
+          <div class="field span-12">
+            <div class="row" style="justify-content: flex-end">
+              <button class="btn" type="button" data-alert="샘플: 검색 API 호출">
+                검색
+              </button>
+              <a class="btn primary" th:href="@{/admin/templates/new}">신규 등록</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="nowrap">템플릿 ID</th>
+                <th>템플릿명</th>
+                <th class="nowrap">타입</th>
+                <th class="nowrap">사용 여부</th>
+                <th class="nowrap">등록일</th>
+                <th class="nowrap">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">TPL-0001</td>
+                <td>monthly_bill_v1</td>
+                <td><span class="tag info">EMAIL</span></td>
+                <td><span class="tag ok">사용</span></td>
+                <td class="nowrap">2025-09-10</td>
+                <td class="nowrap">
+                  <a class="btn" th:href="@{/admin/templates/{id}/edit(id='TPL-0001')}">수정</a>
+                  <button class="btn" type="button" data-alert="샘플: 미사용 처리">
+                    미사용
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">TPL-0002</td>
+                <td>sms_bill_notice_v2</td>
+                <td><span class="tag info">SMS</span></td>
+                <td><span class="tag ok">사용</span></td>
+                <td class="nowrap">2025-10-02</td>
+                <td class="nowrap">
+                  <a class="btn" th:href="@{/admin/templates/{id}/edit(id='TPL-0002')}">수정</a>
+                  <button class="btn" type="button" data-alert="샘플: 미사용 처리">
+                    미사용
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">TPL-0003</td>
+                <td>monthly_bill_v2</td>
+                <td><span class="tag info">EMAIL</span></td>
+                <td><span class="tag warn">미사용</span></td>
+                <td class="nowrap">2025-12-15</td>
+                <td class="nowrap">
+                  <a class="btn" th:href="@{/admin/templates/{id}/edit(id='TPL-0003')}">수정</a>
+                  <button class="btn primary" type="button" data-alert="샘플: 사용 처리">
+                    사용
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div class="page-size">
+            <span>페이지 크기</span>
+            <select>
+              <option>50</option>
+              <option selected>100</option>
+              <option>200</option>
+            </select>
+          </div>
+          <div class="page-info">총 1,240건 중 1-100건</div>
+          <div class="page-nav">
+            <button class="btn" type="button">이전 10</button>
+            <button class="btn active" type="button">1</button>
+            <button class="btn" type="button">2</button>
+            <button class="btn" type="button">3</button>
+            <button class="btn" type="button">4</button>
+            <button class="btn" type="button">5</button>
+            <button class="btn" type="button">6</button>
+            <button class="btn" type="button">7</button>
+            <button class="btn" type="button">8</button>
+            <button class="btn" type="button">9</button>
+            <button class="btn" type="button">10</button>
+            <button class="btn" type="button">다음 10</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

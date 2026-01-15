@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>예약 발송 목록</h3>
+        <div class="row">
+          <span class="tag info">예약된 메시지 리스트</span>
+          <span class="tag info">대기 / 완료 / 취소</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="form">
+          <div class="field span-4">
+            <label>상태</label>
+            <select>
+              <option>전체</option>
+              <option selected>대기</option>
+              <option>완료</option>
+              <option>취소</option>
+            </select>
+          </div>
+          <div class="field span-4">
+            <label>템플릿명</label>
+            <input placeholder="예: monthly_bill_v1" />
+          </div>
+          <div class="field span-4">
+            <label>대상 그룹</label>
+            <input placeholder="예: VIP / ALL / Segment-A" />
+          </div>
+          <div class="field span-12">
+            <div class="row" style="justify-content: flex-end">
+              <button class="btn" type="button" data-alert="샘플: 검색 API 호출">
+                검색
+              </button>
+              <a class="btn primary" th:href="@{/admin/schedule/new}">예약 등록</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="nowrap">예약 ID</th>
+                <th>대상 그룹</th>
+                <th>템플릿명</th>
+                <th class="nowrap">발송 예정 시간</th>
+                <th class="nowrap">상태</th>
+                <th class="nowrap">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">
+                  SCH-20260109-0001
+                </td>
+                <td>VIP</td>
+                <td>monthly_bill_v1</td>
+                <td class="nowrap">2026-01-10 09:00</td>
+                <td><span class="tag warn">대기</span></td>
+                <td class="nowrap">
+                  <button class="btn" type="button" data-alert="샘플: 예약 취소">
+                    취소
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">
+                  SCH-20260108-0003
+                </td>
+                <td>ALL</td>
+                <td>sms_bill_notice_v2</td>
+                <td class="nowrap">2026-01-09 08:30</td>
+                <td><span class="tag ok">완료</span></td>
+                <td class="nowrap">
+                  <button class="btn" type="button" disabled>
+                    취소
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">
+                  SCH-20260107-0007
+                </td>
+                <td>Segment-A</td>
+                <td>monthly_bill_v2</td>
+                <td class="nowrap">2026-01-08 15:00</td>
+                <td><span class="tag bad">취소</span></td>
+                <td class="nowrap">
+                  <button class="btn" type="button" disabled>
+                    취소
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div class="page-size">
+            <span>페이지 크기</span>
+            <select>
+              <option>50</option>
+              <option selected>100</option>
+              <option>200</option>
+            </select>
+          </div>
+          <div class="page-info">총 1,240건 중 1-100건</div>
+          <div class="page-nav">
+            <button class="btn" type="button">이전 10</button>
+            <button class="btn active" type="button">1</button>
+            <button class="btn" type="button">2</button>
+            <button class="btn" type="button">3</button>
+            <button class="btn" type="button">4</button>
+            <button class="btn" type="button">5</button>
+            <button class="btn" type="button">6</button>
+            <button class="btn" type="button">7</button>
+            <button class="btn" type="button">8</button>
+            <button class="btn" type="button">9</button>
+            <button class="btn" type="button">10</button>
+            <button class="btn" type="button">다음 10</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>

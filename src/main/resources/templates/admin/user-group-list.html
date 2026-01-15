@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+  <section>
+    <div class="card">
+      <div class="hd">
+        <h3>사용자 그룹 목록</h3>
+        <div class="row">
+          <span class="tag info">그룹 구성/요금제 관리</span>
+          <span class="tag info">검색 및 상세 이동</span>
+        </div>
+      </div>
+      <div class="bd">
+        <div class="form">
+          <div class="field span-4">
+            <label>그룹 코드</label>
+            <input placeholder="예: GRP-VIP-001" />
+          </div>
+          <div class="field span-4">
+            <label>그룹명</label>
+            <input placeholder="예: VIP 고객" />
+          </div>
+          <div class="field span-4">
+            <label>요금제</label>
+            <select>
+              <option>전체</option>
+              <option>Basic</option>
+              <option>Premium</option>
+              <option>Enterprise</option>
+              <option>사용자 지정</option>
+            </select>
+          </div>
+          <div class="field span-12">
+            <div class="row" style="justify-content: flex-end">
+              <button class="btn" type="button" data-alert="샘플: 사용자 그룹 검색">
+                검색
+              </button>
+              <a class="btn primary" th:href="@{/admin/user-groups/new}">
+                사용자 그룹 등록
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <div class="divider"></div>
+
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th class="nowrap">그룹 코드</th>
+                <th>그룹명</th>
+                <th>설명</th>
+                <th class="nowrap">요금제</th>
+                <th class="nowrap">사용자 수</th>
+                <th class="nowrap">액션</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">GRP-VIP-001</td>
+                <td>VIP 고객</td>
+                <td>프리미엄 요금제 구독 고객 그룹</td>
+                <td><span class="tag ok">Premium</span></td>
+                <td class="nowrap">48명</td>
+                <td class="nowrap">
+                  <a class="btn" th:href="@{/admin/user-groups/{id}(id='GRP-VIP-001')}">상세</a>
+                  <a class="btn" th:href="@{/admin/user-groups/{id}/edit(id='GRP-VIP-001')}">수정</a>
+                  <button class="btn" type="button" data-alert="샘플: 사용자 그룹 삭제">
+                    삭제
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">GRP-ENT-002</td>
+                <td>Enterprise 고객</td>
+                <td>대기업 대상 통합 요금제</td>
+                <td><span class="tag info">Enterprise</span></td>
+                <td class="nowrap">112명</td>
+                <td class="nowrap">
+                  <a class="btn" th:href="@{/admin/user-groups/{id}(id='GRP-ENT-002')}">상세</a>
+                  <a class="btn" th:href="@{/admin/user-groups/{id}/edit(id='GRP-ENT-002')}">수정</a>
+                  <button class="btn" type="button" data-alert="샘플: 사용자 그룹 삭제">
+                    삭제
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <td class="nowrap" style="font-family: var(--mono)">GRP-TEST-003</td>
+                <td>테스트 그룹</td>
+                <td>신규 요금제 A/B 테스트</td>
+                <td><span class="tag warn">사용자 지정</span></td>
+                <td class="nowrap">8명</td>
+                <td class="nowrap">
+                  <a class="btn" th:href="@{/admin/user-groups/{id}(id='GRP-TEST-003')}">상세</a>
+                  <a class="btn" th:href="@{/admin/user-groups/{id}/edit(id='GRP-TEST-003')}">수정</a>
+                  <button class="btn" type="button" data-alert="샘플: 사용자 그룹 삭제">
+                    삭제
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="pagination">
+          <div class="page-size">
+            <span>페이지 크기</span>
+            <select>
+              <option>50</option>
+              <option selected>100</option>
+              <option>200</option>
+            </select>
+          </div>
+          <div class="page-info">총 1,240건 중 1-100건</div>
+          <div class="page-nav">
+            <button class="btn" type="button">이전 10</button>
+            <button class="btn active" type="button">1</button>
+            <button class="btn" type="button">2</button>
+            <button class="btn" type="button">3</button>
+            <button class="btn" type="button">4</button>
+            <button class="btn" type="button">5</button>
+            <button class="btn" type="button">6</button>
+            <button class="btn" type="button">7</button>
+            <button class="btn" type="button">8</button>
+            <button class="btn" type="button">9</button>
+            <button class="btn" type="button">10</button>
+            <button class="btn" type="button">다음 10</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+</html>
