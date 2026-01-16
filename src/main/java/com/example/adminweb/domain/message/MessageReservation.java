@@ -1,6 +1,7 @@
 package com.example.adminweb.domain.message;
 
 import com.example.adminweb.domain.code.Code;
+import com.example.adminweb.domain.user.UserGroup;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -42,12 +43,13 @@ public class MessageReservation {
     @JoinColumn(name = "template_id", nullable = false)
     private MessageTemplate template;
 
-    @Column(name = "template_type_id", nullable = false, length = 10)
-    private String templateTypeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "template_type_id", nullable = false)
+    private Code templateTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_group_id", nullable = false)
-    private com.example.adminweb.domain.user.UserGroup userGroup;
+    private UserGroup userGroup;
 
     @Builder
     private MessageReservation(
@@ -55,8 +57,8 @@ public class MessageReservation {
             Code status,
             Code channelType,
             MessageTemplate template,
-            String templateTypeId,
-            com.example.adminweb.domain.user.UserGroup userGroup
+            Code templateTypeId,
+            UserGroup userGroup
     ) {
         this.scheduledAt = scheduledAt;
         this.status = status;

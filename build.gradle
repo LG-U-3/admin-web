@@ -8,11 +8,6 @@ group = 'com.example'
 version = '0.0.1-SNAPSHOT'
 description = '관리자 페이지를 포함한 메세지 플랫폼'
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(17)
-	}
-}
 
 repositories {
 	mavenCentral()
@@ -33,6 +28,9 @@ dependencies {
     annotationProcessor 'org.projectlombok:lombok'
     testCompileOnly 'org.projectlombok:lombok'   // 테스트코드에서 깨지는거 방지용으로 추가함
     testAnnotationProcessor 'org.projectlombok:lombok' // 테스트코드에서 깨지는거 방지용으로 추가함
+    
+    developmentOnly 'org.springframework.boot:spring-boot-devtools' // DevTools 자동재시작 의존성
+    
 }
 
 tasks.named('test') {

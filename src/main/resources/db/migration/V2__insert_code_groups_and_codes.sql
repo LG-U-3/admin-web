@@ -1,6 +1,8 @@
 -- V2__insert_code_groups_and_codes.sql
 -- Master(Code) data insert
 
+SET NAMES utf8mb4;
+
 -- =========================================================
 -- 1) code_groups
 -- =========================================================
@@ -32,13 +34,17 @@ SELECT 'COMPLETED', '종료됨', id FROM code_groups WHERE code='BATCH_STATUS';
 INSERT IGNORE INTO codes (code, name, group_id)
 SELECT 'FAILED', '처리실패', id FROM code_groups WHERE code='BATCH_STATUS';
 
--- MESSAGE_SEND_STATUS : WAITING / SUCCESS / FAILED
+-- MESSAGE_SEND_STATUS : WAITING / PROCESSING / SUCCESS / FAILED / EXCEEDED
 INSERT IGNORE INTO codes (code, name, group_id)
 SELECT 'WAITING', '대기', id FROM code_groups WHERE code='MESSAGE_SEND_STATUS';
+INSERT IGNORE INTO codes (code, name, group_id)
+SELECT 'PROCESSING', '전송처리중', id FROM code_groups WHERE code='MESSAGE_SEND_STATUS';
 INSERT IGNORE INTO codes (code, name, group_id)
 SELECT 'SUCCESS', '성공', id FROM code_groups WHERE code='MESSAGE_SEND_STATUS';
 INSERT IGNORE INTO codes (code, name, group_id)
 SELECT 'FAILED', '실패', id FROM code_groups WHERE code='MESSAGE_SEND_STATUS';
+INSERT IGNORE INTO codes (code, name, group_id)
+SELECT 'EXCEEDED', '최대재시도초과', id FROM code_groups WHERE code='MESSAGE_SEND_STATUS';
 
 -- MESSAGE_CHANNEL : EMAIL / SMS
 INSERT IGNORE INTO codes (code, name, group_id)
@@ -52,9 +58,11 @@ SELECT 'BILLING', '정산서발송', id FROM code_groups WHERE code='MESSAGE_PUR
 INSERT IGNORE INTO codes (code, name, group_id)
 SELECT 'NOTICE', '알림', id FROM code_groups WHERE code='MESSAGE_PURPOSE';
 
--- RESERVATION_STATUS : WAITING / SENT / CANCELED
+-- RESERVATION_STATUS : WAITING / PROCESSING / SENT / CANCELED
 INSERT IGNORE INTO codes (code, name, group_id)
 SELECT 'WAITING', '발송대기', id FROM code_groups WHERE code='RESERVATION_STATUS';
+INSERT IGNORE INTO codes (code, name, group_id)
+SELECT 'PROCESSING', '발송처리중', id FROM code_groups WHERE code='RESERVATION_STATUS';
 INSERT IGNORE INTO codes (code, name, group_id)
 SELECT 'SENT', '발송됨', id FROM code_groups WHERE code='RESERVATION_STATUS';
 INSERT IGNORE INTO codes (code, name, group_id)
