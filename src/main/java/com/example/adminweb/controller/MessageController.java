@@ -1,34 +1,25 @@
 package com.example.adminweb.controller;
 
-import org.springframework.web.bind.annotation.*;
-import com.example.adminweb.producer.MessageProducer;
+import com.example.adminweb.service.MessageRequestService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/message")
+@RequiredArgsConstructor
 public class MessageController {
 
-  private final MessageProducer producer;
+  private final MessageRequestService messageRequestService;
 
-  public MessageController(MessageProducer producer) {
-    this.producer = producer;
-  }
-
-  @PostMapping("/email")
-  public String sendEmail() {
-    producer.sendEmail(
-        "test@example.com",
-        "Mock Email",
-        "이메일 발송 테스트"
-    );
-    return "EMAIL queued";
-  }
-
-  @PostMapping("/sms")
-  public String sendSms() {
-    producer.sendSms(
-        "01012345678",
-        "SMS 발송 테스트"
-    );
-    return "SMS queued";
+  @PostMapping("/reservations/{reservationId}/send")
+  public ResponseEntity<Void> requestMessage(
+      @PathVariable Long reservationId
+  ) {
+    messageRequestService.requestMessage(reservationId);
+    return ResponseEntity.ok().build();
   }
 }
