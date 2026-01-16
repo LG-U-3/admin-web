@@ -1,22 +1,24 @@
 package com.example.adminweb.domain.message;
 
-import jakarta.persistence.*;
+import com.example.adminweb.domain.code.Code;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
-import com.example.adminweb.domain.user.UserGroup;
 
 @Entity
-@Table(name = "message_reservations",
-       indexes = {
-               @Index(name = "idx_reservations_scheduled_at", columnList = "scheduled_at"),
-               @Index(name = "idx_reservations_status", columnList = "status_id"),
-               @Index(name = "idx_reservations_group", columnList = "user_group_id"),
-               @Index(name = "idx_reservations_template", columnList = "template_id")
-       })
+@Table(name = "message_reservations")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MessageReservation {
@@ -25,33 +27,40 @@ public class MessageReservation {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
+    @Column(name = "scheduled_at", nullable = false)
     private LocalDateTime scheduledAt;
 
-    @Column(nullable = false, length = 20)
-    private String statusId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "status_id", nullable = false)
+    private Code status;
 
-    @Column(nullable = false, length = 20)
-    private String channelTypeId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "channel_type_id", nullable = false)
+    private Code channelType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "template_id", nullable = false)
     private MessageTemplate template;
 
-    @Column(nullable = false, length = 10)
+    @Column(name = "template_type_id", nullable = false, length = 10)
     private String templateTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_group_id", nullable = false)
-    private UserGroup userGroup;
+    private com.example.adminweb.domain.user.UserGroup userGroup;
 
     @Builder
-    private MessageReservation(LocalDateTime scheduledAt, String statusId,
-                               String channelTypeId, MessageTemplate template,
-                               String templateTypeId, UserGroup userGroup) {
+    private MessageReservation(
+            LocalDateTime scheduledAt,
+            Code status,
+            Code channelType,
+            MessageTemplate template,
+            String templateTypeId,
+            com.example.adminweb.domain.user.UserGroup userGroup
+    ) {
         this.scheduledAt = scheduledAt;
-        this.statusId = statusId;
-        this.channelTypeId = channelTypeId;
+        this.status = status;
+        this.channelType = channelType;
         this.template = template;
         this.templateTypeId = templateTypeId;
         this.userGroup = userGroup;

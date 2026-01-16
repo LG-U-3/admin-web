@@ -12,15 +12,13 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Entity
 @Table(
-    name = "users",
-    uniqueConstraints = {
-        @UniqueConstraint(name = "uk_users_phone", columnNames = "phone"),
-        @UniqueConstraint(name = "uk_users_email", columnNames = "email")
-    }
+        name = "users",
+        uniqueConstraints = {
+                @UniqueConstraint(name = "uk_users_phone", columnNames = "phone"),
+                @UniqueConstraint(name = "uk_users_email", columnNames = "email")
+        }
 )
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -33,9 +31,6 @@ public class User {
     @Column(nullable = false, length = 15)
     private String name;
 
-    @Column(name = "join_date", nullable = false)
-    private LocalDateTime joinDate;
-
     @Column(nullable = false, length = 255)
     private String phone;
 
@@ -43,11 +38,9 @@ public class User {
     private String email;
 
     @Builder
-    private User(String name, LocalDateTime joinDate, String phone, String email) {
+    private User(String name, String phone, String email) {
         this.name = name;
-        this.joinDate = joinDate;
         this.phone = phone;
         this.email = email;
     }
 }
-
