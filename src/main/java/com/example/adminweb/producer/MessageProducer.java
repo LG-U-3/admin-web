@@ -1,4 +1,4 @@
-package com.example.adminweb.message;
+package com.example.adminweb.producer;
 
 import java.time.LocalDateTime;
 import java.util.Map;
