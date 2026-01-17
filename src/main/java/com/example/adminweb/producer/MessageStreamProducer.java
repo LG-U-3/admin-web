@@ -1,13 +1,19 @@
 package com.example.adminweb.producer;
 
 import java.util.Map;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StreamOperations;
 import org.springframework.stereotype.Component;
 
 @Component
 public class MessageStreamProducer {
 
-  private static final String STREAM_KEY = "message-stream";
+  @Value("${redis.stream.message.key}")
+  private String streamKey;
+
+  public String streamKey() {
+    return streamKey;
+  }
 
   private final StreamOperations<String, String, String> streamOps;
 
@@ -17,7 +23,7 @@ public class MessageStreamProducer {
 
   public void publish(Long messageSendResultId, String channel, String purpose) {
     streamOps.add(
-        STREAM_KEY,
+        streamKey,
         Map.of(
             "messageSendResultId", messageSendResultId.toString(),
             "channel", channel,

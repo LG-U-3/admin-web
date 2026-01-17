@@ -12,6 +12,7 @@ import com.example.adminweb.repository.MessageReservationRepository;
 import com.example.adminweb.repository.MessageSendResultRepository;
 import com.example.adminweb.repository.UserUserGroupRepository;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
@@ -19,6 +20,8 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -57,12 +60,25 @@ public class MessageRequestService {
         MessageSendStatus.WAITING
     );
 
+    List<Long> resultIds = new ArrayList<>(); // 이후 메시지 발송을 위해 발송 상태ID 저장
+
     for (Long userId : userIds) {
       MessageSendResult result = messageSendResultRepository.save(
           MessageSendResult.createFrom(reservation, userId, waitingStatus)
       );
-      streamProducer.publish(result.getId(), channelTypeCode, purposeTypeCode);
+      resultIds.add(result.getId());
     }
+
+    TransactionSynchronizationManager.registerSynchronization(
+        new TransactionSynchronization() {
+          @Override
+          public void afterCommit() {
+            for (Long resultId : resultIds) {
+              streamProducer.publish(resultId, channelTypeCode, purposeTypeCode);
+            }
+          }
+        }
+    );
 
     markSent(reservation.getId());
   }
