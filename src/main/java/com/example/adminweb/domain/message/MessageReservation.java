@@ -51,5 +51,5 @@ public class MessageReservation {
     this.template = template;
     this.userGroup = userGroup;
   }
- 
+
 }
