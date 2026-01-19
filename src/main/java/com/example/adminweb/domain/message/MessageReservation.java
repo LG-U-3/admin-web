@@ -42,8 +42,6 @@ public class MessageReservation {
     @JoinColumn(name = "template_id", nullable = false)
     private MessageTemplate template;
 
-    @Column(name = "template_type_id", nullable = false, length = 10)
-    private String templateTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_group_id", nullable = false)
@@ -55,14 +53,13 @@ public class MessageReservation {
             Code status,
             Code channelType,
             MessageTemplate template,
-            String templateTypeId,
+          
             com.example.adminweb.domain.user.UserGroup userGroup
     ) {
         this.scheduledAt = scheduledAt;
         this.status = status;
         this.channelType = channelType;
         this.template = template;
-        this.templateTypeId = templateTypeId;
         this.userGroup = userGroup;
     }
 }
