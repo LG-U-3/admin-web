@@ -53,7 +53,6 @@ public class MessageReservation {
             Code status,
             Code channelType,
             MessageTemplate template,
-          
             com.example.adminweb.domain.user.UserGroup userGroup
     ) {
         this.scheduledAt = scheduledAt;
