@@ -1,12 +1,39 @@
 package com.example.adminweb.controller;
 
+import com.example.adminweb.dto.code.CodeGroupResponse;
+import com.example.adminweb.dto.code.CodeResponse;
+import com.example.adminweb.dto.message.MessageTemplateListResponse;
+import com.example.adminweb.dto.user.UserGroupDetailResponse;
+import com.example.adminweb.dto.user.UserGroupListResponse;
+import com.example.adminweb.dto.user.UserGroupUserResponse;
+import com.example.adminweb.service.CodeService;
+import com.example.adminweb.service.MessageTemplateService;
+import com.example.adminweb.service.UplusServiceService;
+import com.example.adminweb.service.UserGroupService;
+import java.util.List;
+import java.util.Objects;
+import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
+@RequiredArgsConstructor
 public class AdminPageController {
+
+  private static final String MESSAGE_PURPOSE_GROUP_CODE = "MESSAGE_PURPOSE";
+  private static final String MESSAGE_CHANNEL_GROUP_CODE = "MESSAGE_CHANNEL";
+
+  private final UserGroupService userGroupService;
+  private final MessageTemplateService messageTemplateService;
+  private final CodeService codeService;
+  private final UplusServiceService uplusServiceService;
+
 
   @GetMapping("/admin")
   public String demoRoot() {
@@ -49,9 +76,49 @@ public class AdminPageController {
   }
 
   @GetMapping("/admin/templates")
-  public String templates(Model model) {
+  public String templates(
+      @RequestParam(required = false) String channelTypeCode,
+      @RequestParam(required = false) String purposeTypeCode,
+      @RequestParam(required = false) String keyword,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "20") int size,
+      Model model
+  ) {
     setPage(model, "Billing System Admin - 템플릿 목록", "템플릿 목록", "templates",
         "템플릿 관리");
+
+    List<CodeGroupResponse> codeGroups = codeService.getCodeGroupsWithCodes();
+    List<CodeResponse> channelTypes = getCodesByGroupCode(codeGroups, MESSAGE_CHANNEL_GROUP_CODE);
+    List<CodeResponse> purposeTypes = getCodesByGroupCode(codeGroups, MESSAGE_PURPOSE_GROUP_CODE);
+
+    Long channelTypeId = getCodeIdByCode(channelTypes, channelTypeCode);
+    Long purposeTypeId = getCodeIdByCode(purposeTypes, purposeTypeCode);
+
+    Page<MessageTemplateListResponse> templatePage =
+        messageTemplateService.getTemplates(
+            channelTypeId,
+            purposeTypeId,
+            keyword,
+            PageRequest.of(page, size, Sort.by("id").descending())
+        );
+
+    long total = templatePage.getTotalElements();
+    long start = total == 0 ? 0 : page * (long) size + 1;
+    long end = total == 0 ? 0 : Math.min((page + 1L) * size, total);
+
+    model.addAttribute("templates", templatePage.getContent());
+    model.addAttribute("templatePage", templatePage);
+    model.addAttribute("channelTypeCode", channelTypeCode);
+    model.addAttribute("purposeTypeCode", purposeTypeCode);
+    model.addAttribute("channelTypes", channelTypes);
+    model.addAttribute("purposeTypes", purposeTypes);
+    model.addAttribute("keyword", keyword);
+    model.addAttribute("page", page);
+    model.addAttribute("size", size);
+    model.addAttribute("total", total);
+    model.addAttribute("start", start);
+    model.addAttribute("end", end);
+
     return "admin/templates";
   }
 
@@ -91,24 +158,77 @@ public class AdminPageController {
   }
 
   @GetMapping("/admin/user-groups")
-  public String userGroupList(Model model) {
+  public String userGroupList(
+      @RequestParam(required = false) String keyword,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "20") int size,
+      Model model
+  ) {
     setPage(model, "Billing System Admin - 사용자 그룹 목록", "사용자 그룹 목록",
         "user-group-list", "그룹/요금제/사용자 관리");
+
+    Page<UserGroupListResponse> groupPage =
+        userGroupService.getUserGroups(
+            keyword,
+            PageRequest.of(page, size)
+        );
+    long total = groupPage.getTotalElements();
+    long start = page * size + 1;
+    long end = Math.min((page + 1L) * size, total);
+
+    model.addAttribute("groups", groupPage.getContent());
+    model.addAttribute("groupPage", groupPage);
+    model.addAttribute("keyword", keyword);
+    model.addAttribute("page", page);
+    model.addAttribute("size", size);
+    model.addAttribute("total", total);
+    model.addAttribute("start", start);
+    model.addAttribute("end", end);
     return "admin/user-group-list";
   }
 
   @GetMapping({"/admin/user-groups/new", "/admin/user-groups/{groupId}/edit"})
   public String userGroupCreate(Model model,
-      @PathVariable(value = "groupId", required = false) String groupId) {
+      @PathVariable(value = "groupId", required = false) Long groupId) {
     setPage(model, "Billing System Admin - 사용자 그룹 등록", "사용자 그룹 등록",
         "user-group-list", "그룹 등록 및 사용자 추가");
+    if (groupId != null) {
+      model.addAttribute("group", userGroupService.getUserGroupDetail(groupId));
+    }
+    model.addAttribute("uplusServices", uplusServiceService.getServiceOptions());
     return "admin/user-group-form";
   }
 
   @GetMapping("/admin/user-groups/{groupId}")
-  public String userGroupDetail(Model model, @PathVariable("groupId") String groupId) {
-    setPage(model, "Billing System Admin - 사용자 그룹 상세", "사용자 그룹 상세",
-        "user-group-list", "그룹 구성 상세 확인");
+  public String userGroupDetail(
+      @PathVariable("groupId") Long groupId,
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "100") int size,
+      Model model
+  ) {
+    setPage(
+        model,
+        "Billing System Admin - 사용자 그룹 상세",
+        "사용자 그룹 상세",
+        "user-group-list",
+        "그룹 구성 상세 확인"
+    );
+
+    UserGroupDetailResponse group =
+        userGroupService.getUserGroupDetail(groupId);
+    Page<UserGroupUserResponse> users =
+        userGroupService.getUsersByGroup(
+            groupId,
+            PageRequest.of(page, size)
+        );
+
+    model.addAttribute("group", group);
+    model.addAttribute("users", users.getContent());
+    model.addAttribute("userPage", users);
+
+    model.addAttribute("page", page);
+    model.addAttribute("size", size);
+
     return "admin/user-group-detail";
   }
 
@@ -118,5 +238,28 @@ public class AdminPageController {
     model.addAttribute("pageTitle", pageTitle);
     model.addAttribute("activeKey", activeKey);
     model.addAttribute("pageStatus", pageStatus);
+  }
+
+  private List<CodeResponse> getCodesByGroupCode(
+      List<CodeGroupResponse> groups,
+      String groupCode
+  ) {
+    return groups.stream()
+        .filter(group -> Objects.equals(group.getCode(), groupCode))
+        .findFirst()
+        .map(CodeGroupResponse::getCodes)
+        .orElse(List.of());
+  }
+
+  private Long getCodeIdByCode(List<CodeResponse> codes, String code) {
+    if (code == null || code.isBlank()) {
+      return null;
+    }
+
+    return codes.stream()
+        .filter(c -> Objects.equals(c.getCode(), code))
+        .map(CodeResponse::getId)
+        .findFirst()
+        .orElse(null);
   }
 }

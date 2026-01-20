@@ -1,6 +1,5 @@
 package com.example.adminweb.domain.user;
 
-import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
@@ -20,20 +19,21 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class UserUserGroup {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "group_id", nullable = false)
-    private UserGroup userGroup;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "group_id", nullable = false)
+  private UserGroup userGroup;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 
-    @Builder
-    private UserUserGroup(UserGroup userGroup, Long userId) {
-        this.userGroup = userGroup;
-        this.userId = userId;
-    }
+  @Builder
+  private UserUserGroup(UserGroup userGroup, User user) {
+    this.userGroup = userGroup;
+    this.user = user;
+  }
 }
