@@ -40,16 +40,19 @@ public class MessageReservation {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_group_id", nullable = false)
   private com.example.adminweb.domain.user.UserGroup userGroup;
+  @Column(name = "target_month", nullable = false, length = 7)
+  private String targetMonth;
 
   @Builder
   private MessageReservation(LocalDateTime scheduledAt, Code status, Code channelType,
-      MessageTemplate template, String templateTypeId,
+      MessageTemplate template, String templateTypeId, String targetMonth,
       com.example.adminweb.domain.user.UserGroup userGroup) {
     this.scheduledAt = scheduledAt;
     this.status = status;
     this.channelType = channelType;
     this.template = template;
     this.userGroup = userGroup;
+    this.targetMonth = targetMonth;
   }
 
 }
