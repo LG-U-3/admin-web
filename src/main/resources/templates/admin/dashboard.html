@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section})}">
+<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section}, ~{::scripts})}">
   <section>
     <div class="grid cols-2">
       <div class="card">
@@ -168,4 +168,5 @@
       </div>
     </div>
   </section>
+  <th:block th:fragment="scripts"></th:block>
 </html>

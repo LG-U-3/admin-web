@@ -1,15 +1,20 @@
 server:
-  port: 8080
+  port: 8081
 
 spring:
   application:
     name: admin-web
   datasource:
-    url: jdbc:mysql://mysql:3306/billing_system
-    username: billing
-    password: billing
+    url: jdbc:mysql://localhost:3307/billing_system
+    username: root
+    password: 1234
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
-      host: redis
+      host: localhost
       port: 6379
+
+redis:
+  stream:
+    message:
+      key: message-stream
