@@ -52,63 +52,8 @@
                 <th class="nowrap">액션</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td>2026-01</td>
-                <td class="nowrap">2026-01-09 02:00:11</td>
-                <td class="nowrap">2026-01-09 02:18:44</td>
-                <td class="right">1,000,000</td>
-                <td class="right">999,120</td>
-                <td class="right">880</td>
-                <td><span class="tag ok">완료</span></td>
-                <td class="nowrap">
-                  <button class="btn" type="button" data-alert="샘플: 재처리 트리거">
-                    재처리
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>2025-12</td>
-                <td class="nowrap">2025-12-01 02:00:02</td>
-                <td class="nowrap">2025-12-01 02:16:11</td>
-                <td class="right">1,000,000</td>
-                <td class="right">999,500</td>
-                <td class="right">500</td>
-                <td><span class="tag ok">완료</span></td>
-                <td class="nowrap">
-                  <button class="btn" type="button" data-alert="샘플: 재처리 트리거">
-                    재처리
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>2025-11</td>
-                <td class="nowrap">2025-11-01 02:00:00</td>
-                <td class="nowrap">2025-11-01 02:05:21</td>
-                <td class="right">1,000,000</td>
-                <td class="right">0</td>
-                <td class="right">0</td>
-                <td><span class="tag warn">중단</span></td>
-                <td class="nowrap">
-                  <button class="btn primary" type="button" data-alert="샘플: 재실행">
-                    재실행
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td>2025-10</td>
-                <td class="nowrap">2025-10-01 02:00:10</td>
-                <td class="nowrap">2025-10-01 02:19:02</td>
-                <td class="right">1,000,000</td>
-                <td class="right">999,920</td>
-                <td class="right">80</td>
-                <td><span class="tag ok">완료</span></td>
-                <td class="nowrap">
-                  <button class="btn" type="button" data-alert="샘플: 재처리 트리거">
-                    재처리
-                  </button>
-                </td>
-              </tr>
+            <tbody id="batchTableBody">
+              <!-- 데이터가 여기에 로드됩니다 -->
             </tbody>
           </table>
         </div>
@@ -121,19 +66,10 @@
               <option>200</option>
             </select>
           </div>
-          <div class="page-info">총 1,240건 중 1-100건</div>
+          <div class="page-info">총 0건 중 0-0건</div>
           <div class="page-nav">
             <button class="btn" type="button">이전 10</button>
             <button class="btn active" type="button">1</button>
-            <button class="btn" type="button">2</button>
-            <button class="btn" type="button">3</button>
-            <button class="btn" type="button">4</button>
-            <button class="btn" type="button">5</button>
-            <button class="btn" type="button">6</button>
-            <button class="btn" type="button">7</button>
-            <button class="btn" type="button">8</button>
-            <button class="btn" type="button">9</button>
-            <button class="btn" type="button">10</button>
             <button class="btn" type="button">다음 10</button>
           </div>
         </div>
@@ -149,5 +85,60 @@
       </div>
     </div>
   </section>
-  <th:block th:fragment="scripts"></th:block>
+  <th:block th:fragment="scripts">
+    <script>
+      document.addEventListener('DOMContentLoaded', function() {
+        fetchBatchRuns();
+      });
+
+      function fetchBatchRuns() {
+        fetch('/api/batches')
+          .then(response => response.json())
+          .then(data => {
+            const tbody = document.getElementById('batchTableBody');
+            tbody.innerHTML = '';
+
+            data.forEach(batch => {
+              const tr = document.createElement('tr');
+              
+              // 상태에 따른 뱃지 스타일 설정
+              let statusBadge = '';
+              if (batch.statusId === 'COMPLETED') {
+                statusBadge = '<span class="tag ok">완료</span>';
+              } else if (batch.statusId === 'FAILED') {
+                statusBadge = '<span class="tag bad">실패</span>';
+              } else if (batch.statusId === 'RUNNING') {
+                statusBadge = '<span class="tag info">실행 중</span>';
+              } else if (batch.statusId === 'STOPPED') {
+                statusBadge = '<span class="tag warn">중단</span>';
+              } else {
+                statusBadge = `<span class="tag">${batch.statusId || '-'}</span>`;
+              }
+
+              // 숫자 포맷팅
+              const totalCount = batch.totalCount ? batch.totalCount.toLocaleString() : '0';
+              const successCount = batch.successCount ? batch.successCount.toLocaleString() : '0';
+              const failCount = (batch.totalCount - batch.successCount) > 0 ? (batch.totalCount - batch.successCount).toLocaleString() : '0';
+
+              tr.innerHTML = `
+                <td>${batch.targetMonth || '-'}</td>
+                <td class="nowrap">${batch.startedAt || '-'}</td>
+                <td class="nowrap">${batch.endedAt || '-'}</td>
+                <td class="right">${totalCount}</td>
+                <td class="right">${successCount}</td>
+                <td class="right">${failCount}</td>
+                <td>${statusBadge}</td>
+                <td class="nowrap">
+                  <button class="btn" type="button" onclick="alert('재처리 기능 준비중')">
+                    재처리
+                  </button>
+                </td>
+              `;
+              tbody.appendChild(tr);
+            });
+          })
+          .catch(error => console.error('Error fetching batch runs:', error));
+      }
+    </script>
+  </th:block>
 </html>
