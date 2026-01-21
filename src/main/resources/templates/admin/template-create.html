@@ -1,58 +1,87 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section}, ~{::scripts})}">
-  <section>
-    <div class="card">
-      <div class="hd">
-        <h3>템플릿 등록</h3>
-        <div class="row">
-          <span class="tag info">제목(EMAIL) / 본문 / 변수 목록 / 미리보기</span>
-        </div>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section}, ~{::scripts})}">
+<section>
+  <div class="card">
+    <div class="hd">
+      <h3>템플릿 등록</h3>
+      <div class="row">
+        <span class="tag info">메시지 발송에 사용될 기본 템플릿 정보를 입력합니다.</span>
       </div>
-      <div class="bd">
+    </div>
+    <div class="bd">
+      <form th:action="@{/admin/templates}" th:object="${templateRequest}" method="post">
         <div class="form">
           <div class="field span-4">
-            <label>템플릿 타입</label>
-            <select id="tplType">
-              <option value="EMAIL" selected>EMAIL</option>
-              <option value="SMS">SMS</option>
+            <label>채널 타입</label>
+            <select th:field="*{channelTypeId}" id="channelTypeSelect" required>
+              <option value="">채널 선택</option>
+              <option th:each="type : ${channelTypes}"
+                      th:value="${type.id}"
+                      th:text="${type.code}">
+              </option>
             </select>
           </div>
           <div class="field span-4">
-            <label>템플릿명</label>
-            <input placeholder="예: monthly_bill_v3" />
+            <label>목적 타입</label>
+            <select th:field="*{purposeTypeId}" required>
+              <option value="">목적 선택</option>
+              <option th:each="type : ${purposeTypes}"
+                      th:value="${type.id}"
+                      th:text="${type.code}">
+              </option>
+            </select>
           </div>
+          <div class="field span-4">
+            <label>템플릿 코드</label>
+            <input th:field="*{code}" placeholder="예: WELCOME_EMAIL_01" required/>
+          </div>
+
+          <div class="field span-8">
+            <label>템플릿명</label>
+            <input th:field="*{name}" placeholder="예: 회원가입 환영 메일 (국문)" required/>
+          </div>
+
           <div class="field span-4">
             <label>사용 여부</label>
             <select>
-              <option selected>사용</option>
-              <option>미사용</option>
+              <option value="true" selected>사용</option>
+              <option value="false">미사용</option>
             </select>
           </div>
 
           <div class="field span-12" id="emailSubjectField">
             <label>제목 (이메일)</label>
-            <input placeholder="[요금명세서] {billingMonth}월 청구 금액 안내" />
+            <input th:field="*{title}" placeholder="[공지] {userName}님, 가입을 환영합니다!"/>
           </div>
 
           <div class="field span-12">
             <label>본문</label>
-            <textarea id="tplBody" placeholder="템플릿 본문을 입력해주세요."></textarea>
+            <textarea th:field="*{body}" id="tplBody" style="height: 200px;"
+                      placeholder="템플릿 본문을 입력해주세요."></textarea>
           </div>
 
           <div class="field span-6">
-            <label>변수 목록</label>
-            <div class="code">
-              {userName} {billingMonth} {usageAmount} {discountAmount} {amount}
-            </div>
+            <label>변수 목록 (JSON)</label>
+            <textarea th:field="*{variablesJson}"
+                      placeholder='{"userName": "홍길동", "date": "2026-01-21"}'
+                      style="font-family: var(--mono); height: 120px;"></textarea>
             <div class="help">
-              변수 치환은 서버에서 템플릿 엔진(예: Thymeleaf, Freemarker 등) 또는
-              자체 치환 로직으로 처리.
+              치환될 변수 명세(JSON)를 입력하세요. 서버 로직에서 실제 값으로 교체됩니다.
             </div>
           </div>
 
           <div class="field span-6">
             <label>미리보기</label>
-            <div class="code" id="previewBox"></div>
+            <div class="code" id="previewBox"
+                 style="height: 120px;
+              overflow-y: auto;
+              background-color: #2c2c2c;
+              color: #ffffff;
+              padding: 15px;
+              border: 1px solid #444;
+              white-space: pre-wrap;">본문을 입력한 후 아래 버튼을 누르세요.
+            </div>
             <div class="row" style="justify-content: flex-end; margin-top: 10px">
               <button class="btn" type="button" data-action="preview">
                 미리보기 갱신
@@ -63,14 +92,62 @@
           <div class="field span-12">
             <div class="row" style="justify-content: flex-end">
               <a class="btn" th:href="@{/admin/templates}">목록</a>
-              <button class="btn primary" type="button" data-alert="샘플: 저장 API 호출">
+              <button class="btn primary" type="submit">
                 등록
               </button>
             </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
-  </section>
-  <th:block th:fragment="scripts"></th:block>
+  </div>
+</section>
+
+<th:block th:fragment="scripts">
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bodyArea = document.getElementById('tplBody');
+      const variablesArea = document.querySelector('textarea[name="variablesJson"]');
+      const previewBox = document.getElementById('previewBox');
+      const btnPreview = document.getElementById('btnPreview');
+
+      btnPreview.addEventListener('click', function() {
+        let content = bodyArea.value;
+        const jsonStr = variablesArea.value;
+
+        if (!content.trim()) {
+          previewBox.innerText = "본문 내용이 없습니다.";
+          return;
+        }
+
+        try {
+          // 1. JSON 데이터 파싱
+          if (jsonStr.trim()) {
+            const data = JSON.parse(jsonStr);
+
+            Object.keys(data).forEach(key => {
+              const regex = new RegExp(`\\{${key}\\}`, 'g');
+              content = content.replace(regex, data[key]);
+            });
+          }
+
+          previewBox.innerText = content;
+          previewBox.style.color = "#333";
+        } catch (e) {
+          alert("변수 목록(JSON) 형식이 올바르지 않습니다.");
+          console.error("JSON Parse Error:", e);
+        }
+      });
+
+      const channelSelect = document.getElementById('channelTypeSelect');
+      const subjectField = document.getElementById('emailSubjectField');
+      if (channelSelect) {
+        channelSelect.addEventListener('change', function() {
+          const selectedText = channelSelect.options[channelSelect.selectedIndex].text;
+          subjectField.style.display = selectedText.includes('EMAIL') ? 'block' : 'none';
+        });
+      }
+    });
+  </script>
+</th:block>
 </html>
