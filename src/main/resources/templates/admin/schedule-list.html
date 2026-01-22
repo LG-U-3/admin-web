@@ -13,24 +13,24 @@
         <div class="form">
           <div class="field span-4">
             <label>상태</label>
-            <select>
-              <option>전체</option>
-              <option selected>대기</option>
-              <option>완료</option>
-              <option>취소</option>
+            <select id="status" class="select-dark">
+              <option value="">전체</option>
+              <option value="WAITING">대기</option>
+              <option value="SENT">완료</option>
+              <option value="CANCELED">취소</option>
             </select>
           </div>
           <div class="field span-4">
             <label>템플릿명</label>
-            <input placeholder="예: monthly_bill_v1" />
+            <input id="templateName" placeholder="예: monthly_bill_v1" />
           </div>
           <div class="field span-4">
             <label>대상 그룹</label>
-            <input placeholder="예: VIP / ALL / Segment-A" />
+            <input id="groupName" placeholder="예: VIP / ALL / Segment-A" />
           </div>
           <div class="field span-12">
             <div class="row" style="justify-content: flex-end">
-              <button class="btn" type="button" data-alert="샘플: 검색 API 호출">
+              <button class="btn" type="button" id="searchBtn">
                 검색
               </button>
               <a class="btn primary" th:href="@{/admin/schedule/new}">예약 등록</a>
@@ -52,49 +52,7 @@
                 <th class="nowrap">액션</th>
               </tr>
             </thead>
-            <tbody>
-              <tr>
-                <td class="nowrap" style="font-family: var(--mono)">
-                  SCH-20260109-0001
-                </td>
-                <td>VIP</td>
-                <td>monthly_bill_v1</td>
-                <td class="nowrap">2026-01-10 09:00</td>
-                <td><span class="tag warn">대기</span></td>
-                <td class="nowrap">
-                  <button class="btn" type="button" data-alert="샘플: 예약 취소">
-                    취소
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td class="nowrap" style="font-family: var(--mono)">
-                  SCH-20260108-0003
-                </td>
-                <td>ALL</td>
-                <td>sms_bill_notice_v2</td>
-                <td class="nowrap">2026-01-09 08:30</td>
-                <td><span class="tag ok">완료</span></td>
-                <td class="nowrap">
-                  <button class="btn" type="button" disabled>
-                    취소
-                  </button>
-                </td>
-              </tr>
-              <tr>
-                <td class="nowrap" style="font-family: var(--mono)">
-                  SCH-20260107-0007
-                </td>
-                <td>Segment-A</td>
-                <td>monthly_bill_v2</td>
-                <td class="nowrap">2026-01-08 15:00</td>
-                <td><span class="tag bad">취소</span></td>
-                <td class="nowrap">
-                  <button class="btn" type="button" disabled>
-                    취소
-                  </button>
-                </td>
-              </tr>
+            <tbody id="reservationTableBody">
             </tbody>
           </table>
         </div>
@@ -107,24 +65,137 @@
               <option>200</option>
             </select>
           </div>
-          <div class="page-info">총 1,240건 중 1-100건</div>
-          <div class="page-nav">
-            <button class="btn" type="button">이전 10</button>
-            <button class="btn active" type="button">1</button>
-            <button class="btn" type="button">2</button>
-            <button class="btn" type="button">3</button>
-            <button class="btn" type="button">4</button>
-            <button class="btn" type="button">5</button>
-            <button class="btn" type="button">6</button>
-            <button class="btn" type="button">7</button>
-            <button class="btn" type="button">8</button>
-            <button class="btn" type="button">9</button>
-            <button class="btn" type="button">10</button>
-            <button class="btn" type="button">다음 10</button>
-          </div>
+          <div class="page-info" id="pageInfo"></div>
+          <div class="page-nav" id="pageNav"></div>
         </div>
       </div>
     </div>
   </section>
-  <th:block th:fragment="scripts"></th:block>
+  <th:block th:fragment="scripts">
+
+    <style>
+      /* select 스타일 */
+      .select-dark {
+        background: #020617;
+        color: #e2e8f0;
+        border: 1px solid rgba(148,163,184,.25);
+      }
+
+      /* disabled 버튼 스타일 */
+      button:disabled {
+        opacity: 0.4;
+        cursor: not-allowed;
+      }
+    </style>
+    <script>
+
+      let currentPage = 0;
+      let pageSize = 20;
+
+      document.getElementById('searchBtn').addEventListener('click', () => {
+        currentPage = 0;
+        loadReservations();
+      });
+
+      function loadReservations() {
+        const status = document.getElementById('status').value;
+        const templateName = document.getElementById('templateName').value;
+        const groupName = document.getElementById('groupName').value;
+
+        const params = new URLSearchParams({
+          page: currentPage,
+          size: pageSize
+        });
+
+        if (status) params.append('status', status);
+        if (templateName) params.append('templateName', templateName);
+        if (groupName) params.append('groupName', groupName);
+
+        fetch(`/api/admin/message-reservations?${params.toString()}`)
+        .then(res => res.json())
+        .then(renderTable);
+      }
+
+      function renderTable(page) {
+        const tbody = document.getElementById('reservationTableBody');
+        tbody.innerHTML = '';
+
+        page.content.forEach(row => {
+          const tr = document.createElement('tr');
+
+          tr.innerHTML = `
+        <td class="nowrap">${row.reservationId}</td>
+        <td>${row.userGroupName}</td>
+        <td>${row.templateName}</td>
+        <td class="nowrap">${row.scheduledAt.replace('T', ' ')}</td>
+        <td>${renderStatus(row.status)}</td>
+        <td class="nowrap">
+          ${row.status === 'WAITING'
+              ? `<button class="btn" onclick="cancel(${row.reservationId})">취소</button>`
+              : `<button class="btn" disabled>취소</button>`}
+        </td>
+      `;
+          tbody.appendChild(tr);
+        });
+
+        renderPageInfo(page);
+        renderPageNav(page);
+      }
+
+      function renderStatus(status) {
+        if (status === 'WAITING') return '<span class="tag warn">대기</span>';
+        if (status === 'SENT') return '<span class="tag ok">완료</span>';
+        if (status === 'CANCELED') return '<span class="tag bad">취소</span>';
+        return status;
+      }
+
+      function renderPageInfo(page) {
+        document.getElementById('pageInfo').innerText =
+            `총 ${page.totalElements}건 중 ${page.number * page.size + 1} - ${
+                Math.min((page.number + 1) * page.size, page.totalElements)
+            }건`;
+      }
+
+      function renderPageNav(page) {
+        const nav = document.getElementById('pageNav');
+        nav.innerHTML = '';
+
+        for (let i = 0; i < page.totalPages; i++) {
+          const btn = document.createElement('button');
+          btn.className = 'btn' + (i === page.number ? ' active' : '');
+          btn.innerText = i + 1;
+          btn.onclick = () => {
+            currentPage = i;
+            loadReservations();
+          };
+          nav.appendChild(btn);
+        }
+      }
+
+
+      function cancel(id) {
+        if (!confirm('이 예약 발송을 취소하시겠습니까?')) {
+          return;
+        }
+
+        fetch(`/api/admin/message-reservations/${id}/cancel`, {
+          method: 'PATCH'
+        })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('취소 실패');
+          }
+          alert('예약이 취소되었습니다.');
+          loadReservations(); // 목록 새로고침
+        })
+        .catch(err => {
+          alert(err.message);
+        });
+      }
+
+      // 최초 로딩
+      loadReservations();
+
+    </script>
+  </th:block>
 </html>
