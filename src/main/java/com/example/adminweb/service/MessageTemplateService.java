@@ -66,4 +66,43 @@ public class MessageTemplateService {
         .build()
     );
   }
+
+  @Transactional
+  public void updateTemplate(String code, MessageTemplateCreateRequest request) {
+    MessageTemplate template = messageTemplateRepository.findByCode(code)
+        .orElseThrow(() -> new IllegalArgumentException("해당 템플릿을 찾을 수 없습니다. code=" + code));
+
+    var channelType = codeRepository.findById(request.getChannelTypeId())
+        .orElseThrow(() -> new IllegalArgumentException("채널 타입이 유효하지 않습니다."));
+    var purposeType = codeRepository.findById(request.getPurposeTypeId())
+        .orElseThrow(() -> new IllegalArgumentException("목적 타입이 유효하지 않습니다."));
+
+    // 엔티티의 필드를 업데이트 (Dirty Checking 발생)
+    template.update(
+        request.getCode(),
+        request.getName(),
+        channelType,
+        purposeType,
+        request.getTitle(),
+        request.getBody(),
+        request.getVariablesJson()
+    );
+  }
+
+  public MessageTemplateCreateRequest getTemplateForEdit(String code) {
+    MessageTemplate template = messageTemplateRepository.findByCode(code)
+        .orElseThrow(() -> new IllegalArgumentException("해당 템플릿을 찾을 수 없습니다. code=" + code));
+
+    MessageTemplateCreateRequest dto = new MessageTemplateCreateRequest();
+    dto.setCode(template.getCode());
+    dto.setName(template.getName());
+    dto.setChannelTypeId(template.getChannelType().getId());
+    dto.setPurposeTypeId(template.getPurposeType().getId());
+    dto.setTitle(template.getTitle());
+    dto.setBody(template.getBody());
+    dto.setVariablesJson(template.getVariablesJson());
+
+    return dto;
+  }
+
 }

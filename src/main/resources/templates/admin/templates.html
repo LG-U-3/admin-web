@@ -1,142 +1,146 @@
 <!DOCTYPE html>
-<html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section}, ~{::scripts})}">
-  <section>
-    <div class="card">
-      <div class="hd">
-        <h3>템플릿 목록</h3>
-        <div class="row">
-          <span class="tag info">채널 타입 / 목적 타입</span>
-          <span class="tag info">템플릿 제목 검색</span>
-        </div>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section}, ~{::scripts})}">
+<section>
+  <div class="card">
+    <div class="hd">
+      <h3>템플릿 목록</h3>
+      <div class="row">
+        <span class="tag info">채널 타입 / 목적 타입</span>
+        <span class="tag info">템플릿 제목 검색</span>
       </div>
-      <div class="bd">
-        <form method="get" th:action="@{/admin/templates}">
-          <div class="form">
-            <div class="field span-3">
-              <label>채널 타입</label>
-              <select name="channelTypeCode">
-                <option value="" th:selected="${#strings.isEmpty(channelTypeCode)}">
-                  전체
-                </option>
-                <option th:each="channel : ${channelTypes}"
-                        th:value="${channel.code}"
-                        th:selected="${channel.code == channelTypeCode}"
-                        th:text="${channel.code}">
-                </option>
-              </select>
-            </div>
-            <div class="field span-3">
-              <label>목적 타입</label>
-              <select name="purposeTypeCode">
-                <option value="" th:selected="${#strings.isEmpty(purposeTypeCode)}">
-                  전체
-                </option>
-                <option th:each="purpose : ${purposeTypes}"
-                        th:value="${purpose.code}"
-                        th:selected="${purpose.code == purposeTypeCode}"
-                        th:text="${purpose.code}">
-                </option>
-              </select>
-            </div>
-            <div class="field span-6">
-              <label>템플릿명 / 제목</label>
-              <input name="keyword"
-                     th:value="${keyword}"
-                     placeholder="키워드 검색" />
-            </div>
-            <div class="field span-12">
-              <div class="row" style="justify-content: flex-end">
-                <button class="btn" type="submit">
-                  검색
-                </button>
-                <a class="btn primary" th:href="@{/admin/templates/new}">신규 등록</a>
-              </div>
-            </div>
-          </div>
-        </form>
-
-        <div class="divider"></div>
-
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th class="nowrap">템플릿 코드</th>
-                <th>템플릿명</th>
-                <th class="nowrap">채널 타입</th>
-                <th class="nowrap">목적 타입</th>
-                <th>제목</th>
-                <th class="nowrap">액션</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr th:each="template : ${templates}">
-                <td class="nowrap"
-                    style="font-family: var(--mono)"
-                    th:text="${template.code}">
-                </td>
-                <td th:text="${template.name}"></td>
-                <td class="nowrap">
-                  <span class="tag info" th:text="${template.channelTypeCode}"></span>
-                </td>
-                <td class="nowrap">
-                  <span class="tag info" th:text="${template.purposeTypeCode}"></span>
-                </td>
-                <td th:text="${template.title}"></td>
-                <td class="nowrap">
-                  <a class="btn"
-                     th:href="@{/admin/templates/{id}/edit(id=${template.code})}">
-                    수정
-                  </a>
-                </td>
-              </tr>
-              <tr th:if="${#lists.isEmpty(templates)}">
-                <td colspan="6" style="text-align:center;">
-                  조회된 템플릿이 없습니다.
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-        <div class="pagination">
-          <div class="page-size">
-            <span>페이지 크기</span>
-            <select onchange="location.href=this.value">
-              <option th:value="@{/admin/templates(page=0,size=20,channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}"
-                      th:selected="${size == 20}">
-                20
+    </div>
+    <div class="bd">
+      <form method="get" th:action="@{/admin/templates}">
+        <div class="form">
+          <div class="field span-3">
+            <label>채널 타입</label>
+            <select name="channelTypeCode">
+              <option value="" th:selected="${#strings.isEmpty(channelTypeCode)}">
+                전체
               </option>
-              <option th:value="@{/admin/templates(page=0,size=50,channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}"
-                      th:selected="${size == 50}">
-                50
-              </option>
-              <option th:value="@{/admin/templates(page=0,size=100,channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}"
-                      th:selected="${size == 100}">
-                100
+              <option th:each="channel : ${channelTypes}"
+                      th:value="${channel.code}"
+                      th:selected="${channel.code == channelTypeCode}"
+                      th:text="${channel.code}">
               </option>
             </select>
           </div>
-          <div class="page-info"
-               th:text="|총 ${total}건 중 ${start}-${end}건|">
+          <div class="field span-3">
+            <label>목적 타입</label>
+            <select name="purposeTypeCode">
+              <option value="" th:selected="${#strings.isEmpty(purposeTypeCode)}">
+                전체
+              </option>
+              <option th:each="purpose : ${purposeTypes}"
+                      th:value="${purpose.code}"
+                      th:selected="${purpose.code == purposeTypeCode}"
+                      th:text="${purpose.code}">
+              </option>
+            </select>
           </div>
-          <div class="page-nav">
-            <a class="btn"
-               th:if="${templatePage.hasPrevious()}"
-               th:href="@{/admin/templates(page=${page-1},size=${size},channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}">
-              이전
-            </a>
-            <span class="btn active"
-                  th:text="${page + 1}">
+          <div class="field span-6">
+            <label>템플릿명 / 제목</label>
+            <input name="keyword"
+                   th:value="${keyword}"
+                   placeholder="키워드 검색"/>
+          </div>
+          <div class="field span-12">
+            <div class="row" style="justify-content: flex-end">
+              <button class="btn" type="submit">
+                검색
+              </button>
+              <a class="btn primary" th:href="@{/admin/templates/new}">신규 등록</a>
+            </div>
+          </div>
+        </div>
+      </form>
+
+      <div class="divider"></div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th class="nowrap">템플릿 코드</th>
+            <th>템플릿명</th>
+            <th class="nowrap">채널 타입</th>
+            <th class="nowrap">목적 타입</th>
+            <th>제목</th>
+            <th class="nowrap">액션</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="template : ${templates}">
+            <td class="nowrap"
+                style="font-family: var(--mono)"
+                th:text="${template.code}">
+            </td>
+            <td th:text="${template.name}"></td>
+            <td class="nowrap">
+              <span class="tag info" th:text="${template.channelTypeCode}"></span>
+            </td>
+            <td class="nowrap">
+              <span class="tag info" th:text="${template.purposeTypeCode}"></span>
+            </td>
+            <td th:text="${template.title}"></td>
+            <td class="nowrap">
+              <a class="btn"
+                 th:href="@{/api/admin/message-templates/{id}/edit(id=${template.code})}">
+                수정
+              </a>
+            </td>
+          </tr>
+          <tr th:if="${#lists.isEmpty(templates)}">
+            <td colspan="6" style="text-align:center;">
+              조회된 템플릿이 없습니다.
+            </td>
+          </tr>
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="page-size">
+          <span>페이지 크기</span>
+          <select onchange="location.href=this.value">
+            <option
+                th:value="@{/admin/templates(page=0,size=20,channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}"
+                th:selected="${size == 20}">
+              20
+            </option>
+            <option
+                th:value="@{/admin/templates(page=0,size=50,channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}"
+                th:selected="${size == 50}">
+              50
+            </option>
+            <option
+                th:value="@{/admin/templates(page=0,size=100,channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}"
+                th:selected="${size == 100}">
+              100
+            </option>
+          </select>
+        </div>
+        <div class="page-info"
+             th:text="|총 ${total}건 중 ${start}-${end}건|">
+        </div>
+        <div class="page-nav">
+          <a class="btn"
+             th:if="${templatePage.hasPrevious()}"
+             th:href="@{/admin/templates(page=${page-1},size=${size},channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}">
+            이전
+          </a>
+          <span class="btn active"
+                th:text="${page + 1}">
             </span>
-            <a class="btn"
-               th:if="${templatePage.hasNext()}"
-               th:href="@{/admin/templates(page=${page+1},size=${size},channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}">
-              다음
-            </a>
-          </div>
+          <a class="btn"
+             th:if="${templatePage.hasNext()}"
+             th:href="@{/admin/templates(page=${page+1},size=${size},channelTypeCode=${channelTypeCode},purposeTypeCode=${purposeTypeCode},keyword=${keyword})}">
+            다음
+          </a>
         </div>
       </div>
     </div>
-  </section>
-  <th:block th:fragment="scripts"></th:block>
+  </div>
+</section>
+<th:block th:fragment="scripts"></th:block>
 </html>
