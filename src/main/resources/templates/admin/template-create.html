@@ -26,10 +26,12 @@
             <input type="hidden" th:field="*{code}" id="hiddenCode"/>
           </div>
           <div class="field span-4">
-            <label>사용 여부</label>
-            <select>
-              <option selected>사용</option>
-              <option>미사용</option>
+            <label>목적 타입</label>
+            <select th:field="*{purposeTypeId}" id="purposeType" required>
+              <option value="">선택하세요</option>
+              <option th:each="purpose : ${purposeTypes}"
+                      th:value="${purpose.id}"
+                      th:text="${purpose.code}"></option>
             </select>
           </div>
 
@@ -72,7 +74,6 @@
             </div>
           </div>
         </div>
-        <input type="hidden" name="purposeTypeId" value="1"/>
       </form>
     </div>
   </div>
