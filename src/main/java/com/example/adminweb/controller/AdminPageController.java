@@ -2,6 +2,7 @@ package com.example.adminweb.controller;
 
 import com.example.adminweb.dto.code.CodeGroupResponse;
 import com.example.adminweb.dto.code.CodeResponse;
+import com.example.adminweb.dto.message.MessageTemplateCreateRequest;
 import com.example.adminweb.dto.message.MessageTemplateListResponse;
 import com.example.adminweb.dto.user.UserGroupDetailResponse;
 import com.example.adminweb.dto.user.UserGroupListResponse;
@@ -19,7 +20,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
@@ -126,7 +129,20 @@ public class AdminPageController {
   public String templateCreate(Model model) {
     setPage(model, "Billing System Admin - 템플릿 등록", "템플릿 등록", "templates",
         "신규 템플릿 등록");
+
+    List<CodeGroupResponse> codeGroups = codeService.getCodeGroupsWithCodes();
+    model.addAttribute("channelTypes", getCodesByGroupCode(codeGroups, MESSAGE_CHANNEL_GROUP_CODE));
+    model.addAttribute("purposeTypes", getCodesByGroupCode(codeGroups, MESSAGE_PURPOSE_GROUP_CODE));
+
+    model.addAttribute("templateRequest", new MessageTemplateCreateRequest());
     return "admin/template-create";
+  }
+
+  @PostMapping("/admin/templates")
+  public String createTemplate(
+      @ModelAttribute("templateRequest") MessageTemplateCreateRequest request) {
+    messageTemplateService.createTemplate(request);
+    return "redirect:/admin/templates";
   }
 
   @GetMapping("/admin/templates/{templateId}/edit")
