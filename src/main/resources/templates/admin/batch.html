@@ -173,7 +173,7 @@
         const diff = now - parseInt(lastRetryTime, 10);
 
         // 1분(60000ms) 미만이면 쿨다운 중
-        return diff < 60000;
+        return diff < 180000;
     }
 
     async function retryBatch() {
