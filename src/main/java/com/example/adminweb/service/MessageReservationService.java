@@ -22,22 +22,15 @@ public class MessageReservationService {
   private final MessageReservationRepository reservationRepository;
   private final CodeRepository codeRepository;
 
-  public Page<MessageReservationListResponse> getReservations(
-      String status,
-      String templateName,
-      String groupName,
-      Pageable pageable
-  ) {
-    return queryRepository.findReservations(
-        status, templateName, groupName, pageable
-    );
+  public Page<MessageReservationListResponse> getReservations(String status, String templateName,
+      String groupName, Pageable pageable) {
+    return queryRepository.findReservations(status, templateName, groupName, pageable);
   }
 
   @Transactional
   public void cancelReservation(Long reservationId) {
 
-    MessageReservation reservation = reservationRepository
-        .findByIdWithStatus(reservationId)
+    MessageReservation reservation = reservationRepository.findByIdWithStatus(reservationId)
         .orElseThrow(() -> new IllegalArgumentException("예약 없음"));
 
     // 이미 완료/취소된 건 취소 불가
