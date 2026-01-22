@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +21,7 @@ public class BatchRunService {
         .map(batchRun -> BatchRunResponse.builder()
             .batchRunId(batchRun.getId())
             .targetMonth(batchRun.getTargetMonth())
-            .statusId(batchRun.getStatus() != null ? batchRun.getStatus().getName() : null)
+            .statusCode(batchRun.getStatus() != null ? batchRun.getStatus().getCode() : null)
             .startedAt(batchRun.getStartedAt() != null ? batchRun.getStartedAt().toString() : null)
             .endedAt(batchRun.getEndedAt() != null ? batchRun.getEndedAt().toString() : null)
             .durationMs(batchRun.getDurationMs())
@@ -29,6 +30,11 @@ public class BatchRunService {
             .createdBy(batchRun.getCreatedBy())
             .build())
         .toList();
+  }
+
+  public String retryBatch() {
+    RestTemplate restTemplate = new RestTemplate();
+    return restTemplate.postForObject("http://billing-batch:8090/scheduler/billing-job-retry", null, String.class);
   }
 
 }

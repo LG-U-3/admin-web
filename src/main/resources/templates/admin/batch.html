@@ -1,144 +1,208 @@
 <!DOCTYPE html>
 <html lang="ko" xmlns:th="http://www.thymeleaf.org" th:replace="~{admin/layout :: layout(${title}, ${pageTitle}, ${activeKey}, ${pageStatus}, ~{::section}, ~{::scripts})}">
-  <section>
-    <div class="card">
-      <div class="hd">
-        <h3>정산 배치 실행/관리</h3>
-        <div class="row">
-          <span class="status s-info"><span class="dot"></span> 월별 실행</span>
-        </div>
-      </div>
-      <div class="bd">
-        <div class="form">
-          <div class="field span-4">
-            <label>정산 월</label>
-            <input type="month" value="2026-01" />
-          </div>
-          <div class="field span-4">
-            <label>실행 옵션</label>
-            <select>
-              <option>일반 실행</option>
-              <option>재처리(실패 건만)</option>
-              <option>드라이런(검증)</option>
-            </select>
-          </div>
-          <div class="field span-4">
-            <label>실행 제어</label>
-            <div class="row">
-              <button class="btn primary" type="button" data-alert="샘플: 월별 배치 실행 API 호출">
-                배치 실행
-              </button>
-              <button class="btn" type="button" data-alert="샘플: 실행 중지 요청">
-                중지 요청
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="subtle" style="margin-bottom: 8px">배치 실행 목록</div>
-        <div class="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th class="nowrap">정산 월</th>
-                <th class="nowrap">실행 시작</th>
-                <th class="nowrap">실행 종료</th>
-                <th class="right nowrap">처리 건수</th>
-                <th class="right nowrap">성공</th>
-                <th class="right nowrap">실패</th>
-                <th class="nowrap">상태</th>
-                <th class="nowrap">액션</th>
-              </tr>
-            </thead>
-            <tbody id="batchTableBody">
-              <!-- 데이터가 여기에 로드됩니다 -->
-            </tbody>
-          </table>
-        </div>
-        <div class="pagination">
-          <div class="page-size">
-            <span>페이지 크기</span>
-            <select>
-              <option>50</option>
-              <option selected>100</option>
-              <option>200</option>
-            </select>
-          </div>
-          <div class="page-info">총 0건 중 0-0건</div>
-          <div class="page-nav">
-            <button class="btn" type="button">이전 10</button>
-            <button class="btn active" type="button">1</button>
-            <button class="btn" type="button">다음 10</button>
-          </div>
-        </div>
-
-        <div class="divider"></div>
-
-        <div class="help">
-          상태 정의 예시: <span class="tag info">실행 중</span> /
-          <span class="tag ok">완료</span> /
-          <span class="tag bad">실패</span> /
-          <span class="tag warn">중단</span>
-        </div>
+<section>
+  <div class="card">
+    <div class="hd">
+      <h3>정산 배치 실행/관리</h3>
+      <div class="row">
+        <span class="status s-info"><span class="dot"></span> 월별 실행</span>
       </div>
     </div>
-  </section>
-  <th:block th:fragment="scripts">
-    <script>
-      document.addEventListener('DOMContentLoaded', function() {
-        fetchBatchRuns();
-      });
+    <div class="bd">
 
-      function fetchBatchRuns() {
-        fetch('/api/batches')
-          .then(response => response.json())
-          .then(data => {
-            const tbody = document.getElementById('batchTableBody');
-            tbody.innerHTML = '';
+      <div class="row" style="margin-bottom: 16px; align-items: center;">
+        <h4 style="margin: 0; margin-right: 12px;">대상 월: <span id="targetMonthDisplay">-</span></h4>
+        <button id="retryButton" class="btn primary" type="button" onclick="retryBatch()" style="display: none;">
+          재처리
+        </button>
+        <span id="topStatusMessage" style="display: none; font-weight: bold;"></span>
+      </div>
 
-            data.forEach(batch => {
-              const tr = document.createElement('tr');
+      <div class="divider"></div>
+
+      <div class="subtle" style="margin-bottom: 8px">배치 실행 목록</div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+          <tr>
+            <th class="nowrap">정산 월</th>
+            <th class="nowrap">실행 시작</th>
+            <th class="nowrap">실행 종료</th>
+            <th class="right nowrap">처리 건수</th>
+            <th class="right nowrap">성공</th>
+            <th class="right nowrap">실패</th>
+            <th class="nowrap">상태</th>
+          </tr>
+          </thead>
+          <tbody id="batchTableBody">
+          <!-- 데이터가 여기에 로드됩니다 -->
+          </tbody>
+        </table>
+      </div>
+      <div class="pagination">
+        <div class="page-size">
+          <span>페이지 크기</span>
+          <select>
+            <option>50</option>
+            <option selected>100</option>
+            <option>200</option>
+          </select>
+        </div>
+        <div class="page-info">총 0건 중 0-0건</div>
+        <div class="page-nav">
+          <button class="btn" type="button">이전 10</button>
+          <button class="btn active" type="button">1</button>
+          <button class="btn" type="button">다음 10</button>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="help">
+        상태 정의 예시: <span class="tag info">실행 중</span> /
+        <span class="tag ok">완료</span> /
+        <span class="tag bad">실패</span> /
+        <span class="tag warn">중단</span>
+      </div>
+    </div>
+  </div>
+</section>
+<th:block th:fragment="scripts">
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      fetchBatchRuns();
+    });
+
+    function fetchBatchRuns() {
+      fetch('/api/batches')
+        .then(response => response.json())
+        .then(data => {
+          const tbody = document.getElementById('batchTableBody');
+          const targetMonthDisplay = document.getElementById('targetMonthDisplay');
+          const retryButton = document.getElementById('retryButton');
+          const topStatusMessage = document.getElementById('topStatusMessage');
+
+          tbody.innerHTML = '';
+
+          // 1. 가장 최근 데이터(첫번째)의 targetMonth 표시
+          if (data.length > 0) {
+              targetMonthDisplay.textContent = data[0].targetMonth || '-';
+          }
+
+          // UI 초기화
+          retryButton.style.display = 'none';
+          topStatusMessage.style.display = 'none';
+          topStatusMessage.textContent = '';
+
+          // 3. 상태 체크 및 UI 업데이트 (전체 데이터 기준)
+          const hasStarted = data.some(batch => batch.statusCode === 'STARTED' || batch.statusCode === '처리시작');
+          const hasCompleted = data.some(batch => batch.statusCode === 'COMPLETED');
+          const hasFailed = data.some(batch => batch.statusCode === 'FAILED');
+
+          if (hasStarted) {
+              topStatusMessage.textContent = '배치 처리 중';
+              topStatusMessage.style.color = '#007bff';
+              topStatusMessage.style.display = 'inline-block';
+          } else if (hasCompleted) {
+              topStatusMessage.textContent = '배치 처리 완료';
+              topStatusMessage.style.color = '#28a745';
+              topStatusMessage.style.display = 'inline-block';
+          } else if (hasFailed) {
+              retryButton.style.display = 'inline-block';
               
-              // 상태에 따른 뱃지 스타일 설정
-              let statusBadge = '';
-              if (batch.statusId === 'COMPLETED') {
-                statusBadge = '<span class="tag ok">완료</span>';
-              } else if (batch.statusId === 'FAILED') {
-                statusBadge = '<span class="tag bad">실패</span>';
-              } else if (batch.statusId === 'RUNNING') {
-                statusBadge = '<span class="tag info">실행 중</span>';
-              } else if (batch.statusId === 'STOPPED') {
-                statusBadge = '<span class="tag warn">중단</span>';
-              } else {
-                statusBadge = `<span class="tag">${batch.statusId || '-'}</span>`;
+              // 쿨다운 체크
+              const isCooldown = checkCooldown();
+              retryButton.disabled = isCooldown;
+              retryButton.className = isCooldown ? 'btn' : 'btn primary';
+              retryButton.textContent = isCooldown ? '대기중' : '재처리';
+          }
+
+          data.forEach(batch => {
+            const tr = document.createElement('tr');
+
+            // 상태에 따른 뱃지 스타일 설정
+            let statusBadge = '';
+            if (batch.statusCode === 'COMPLETED') {
+              statusBadge = '<span class="tag ok">완료</span>';
+            } else if (batch.statusCode === 'FAILED') {
+              statusBadge = '<span class="tag bad">실패</span>';
+            } else if (batch.statusCode === 'STARTED' || batch.statusCode === '처리시작') {
+              statusBadge = '<span class="tag info">실행 중</span>';
+            } else if (batch.statusCode === 'STOPPED') {
+              statusBadge = '<span class="tag warn">중단</span>';
+            } else {
+              statusBadge = `<span class="tag">${batch.statusCode || '-'}</span>`;
+            }
+
+            // 숫자 포맷팅
+            const totalCount = batch.totalCount ? batch.totalCount.toLocaleString() : '0';
+            const successCount = batch.successCount ? batch.successCount.toLocaleString() : '0';
+            const failCount = (batch.totalCount - batch.successCount) > 0 ? (batch.totalCount - batch.successCount).toLocaleString() : '0';
+
+            tr.innerHTML = `
+              <td>${batch.targetMonth || '-'}</td>
+              <td class="nowrap">${batch.startedAt || '-'}</td>
+              <td class="nowrap">${batch.endedAt || '-'}</td>
+              <td class="right">${totalCount}</td>
+              <td class="right">${successCount}</td>
+              <td class="right">${failCount}</td>
+              <td>${statusBadge}</td>
+            `;
+            tbody.appendChild(tr);
+          });
+
+          // 쿨다운 중이라면 남은 시간 후에 다시 fetchBatchRuns 호출하여 버튼 활성화
+          if (checkCooldown()) {
+              const lastRetryTime = parseInt(localStorage.getItem('lastBatchRetryTime'), 10);
+              const now = new Date().getTime();
+              const remainingTime = 60000 - (now - lastRetryTime);
+
+              if (remainingTime > 0) {
+                  setTimeout(fetchBatchRuns, remainingTime);
               }
+          }
+        })
+        .catch(error => console.error('Error fetching batch runs:', error));
+    }
 
-              // 숫자 포맷팅
-              const totalCount = batch.totalCount ? batch.totalCount.toLocaleString() : '0';
-              const successCount = batch.successCount ? batch.successCount.toLocaleString() : '0';
-              const failCount = (batch.totalCount - batch.successCount) > 0 ? (batch.totalCount - batch.successCount).toLocaleString() : '0';
+    function checkCooldown() {
+        const lastRetryTime = localStorage.getItem('lastBatchRetryTime');
+        if (!lastRetryTime) return false;
 
-              tr.innerHTML = `
-                <td>${batch.targetMonth || '-'}</td>
-                <td class="nowrap">${batch.startedAt || '-'}</td>
-                <td class="nowrap">${batch.endedAt || '-'}</td>
-                <td class="right">${totalCount}</td>
-                <td class="right">${successCount}</td>
-                <td class="right">${failCount}</td>
-                <td>${statusBadge}</td>
-                <td class="nowrap">
-                  <button class="btn" type="button" onclick="alert('재처리 기능 준비중')">
-                    재처리
-                  </button>
-                </td>
-              `;
-              tbody.appendChild(tr);
-            });
-          })
-          .catch(error => console.error('Error fetching batch runs:', error));
-      }
-    </script>
-  </th:block>
+        const now = new Date().getTime();
+        const diff = now - parseInt(lastRetryTime, 10);
+
+        // 1분(60000ms) 미만이면 쿨다운 중
+        return diff < 60000;
+    }
+
+    async function retryBatch() {
+        if (checkCooldown()) {
+            alert('재처리 요청 후 1분간은 다시 요청할 수 없습니다.');
+            return;
+        }
+
+        if(!confirm('배치를 재실행 하시겠습니까?')) return;
+
+        // 쿨다운 시작 시간 저장
+        localStorage.setItem('lastBatchRetryTime', new Date().getTime());
+
+        // 즉시 UI 갱신하여 버튼 비활성화
+        fetchBatchRuns();
+
+        fetch('/api/batches/retry', {
+            method: 'POST'
+        })
+        .then(response => response.text())
+        .then(result => {
+            alert('요청 결과: ' + result);
+            fetchBatchRuns(); // 목록 갱신
+        })
+        .catch(error => {
+<!--            console.error('Error retrying batch:', error);-->
+<!--            alert('재처리 요청 중 오류가 발생했습니다.');-->
+        });
+    }
+  </script>
+</th:block>
 </html>

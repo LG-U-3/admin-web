@@ -11,7 +11,7 @@ public class BatchRunResponse {
 
   private Long batchRunId;
   private String targetMonth;
-  private String statusId;
+  private String statusCode;
   private String startedAt;
   private String endedAt;
   private Long durationMs;
