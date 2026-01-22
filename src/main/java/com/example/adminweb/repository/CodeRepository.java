@@ -12,4 +12,6 @@ public interface CodeRepository extends JpaRepository<Code, Long> {
   List<Code> findAllByCodeGroupIdIn(List<Long> groupIds);
 
   Optional<Code> findByCode(String code);
+
+  Optional<Code> findByCodeAndCodeGroup_Code(String code, String codeGroupCode);
 }

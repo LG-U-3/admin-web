@@ -14,19 +14,19 @@
         <div class="form">
           <div class="field span-6">
             <label>대상 사용자 그룹</label>
-            <select>
+            <select id="userGroupSelect">
               <option>ALL (전체)</option>
               <option>VIP</option>
               <option>Segment-A</option>
               <option>Segment-B</option>
             </select>
-            <div class="help">
-              실제 구현에서는 그룹 정의/필터(요금제/지역/가입기간 등) 구성 가능.
-            </div>
+<!--            <div class="help">-->
+<!--              실제 구현에서는 그룹 정의/필터(요금제/지역/가입기간 등) 구성 가능.-->
+<!--            </div>-->
           </div>
           <div class="field span-6">
             <label>템플릿 선택</label>
-            <select>
+            <select id="templateSelect">
               <option>monthly_bill_v1 (EMAIL)</option>
               <option>sms_bill_notice_v2 (SMS)</option>
               <option>monthly_bill_v2 (EMAIL)</option>
@@ -35,27 +35,27 @@
 
           <div class="field span-6">
             <label>발송 예정 일시</label>
-            <input type="datetime-local" value="2026-01-10T09:00" />
+            <input id="scheduledAt" type="datetime-local"/>
           </div>
-          <div class="field span-6">
-            <label>상태</label>
-            <select>
-              <option selected>대기</option>
-              <option>취소</option>
-            </select>
-          </div>
+<!--          <div class="field span-6">-->
+<!--            <label>상태</label>-->
+<!--            <select>-->
+<!--              <option selected>대기</option>-->
+<!--              <option>취소</option>-->
+<!--            </select>-->
+<!--          </div>-->
 
-          <div class="field span-12">
-            <label>메모(운영자용)</label>
-            <textarea
-              placeholder="예: VIP 대상 월별 정산 안내 / 장애 복구 후 재공지"
-            ></textarea>
-          </div>
+<!--          <div class="field span-12">-->
+<!--            <label>메모(운영자용)</label>-->
+<!--            <textarea-->
+<!--              placeholder="예: VIP 대상 월별 정산 안내 / 장애 복구 후 재공지"-->
+<!--            ></textarea>-->
+<!--          </div>-->
 
           <div class="field span-12">
             <div class="row" style="justify-content: flex-end">
               <a class="btn" th:href="@{/admin/schedule}">목록</a>
-              <button class="btn primary" type="button" data-alert="샘플: 예약 생성 API 호출">
+              <button class="btn primary" type="button" onclick="submitReservation()">
                 예약 등록
               </button>
             </div>
@@ -71,5 +71,84 @@
       </div>
     </div>
   </section>
-  <th:block th:fragment="scripts"></th:block>
+  <th:block th:fragment="scripts">
+    <script>
+      // 페이지 로드 시 form 데이터 불러오기
+      document.addEventListener('DOMContentLoaded', () => {
+
+        // 예약시간 기본값: 지금 + 5분
+        const input = document.getElementById('scheduledAt');
+
+        const now = new Date();
+        now.setMinutes(now.getMinutes() + 5);
+
+        const yyyy = now.getFullYear();
+        const MM = String(now.getMonth() + 1).padStart(2, '0');
+        const dd = String(now.getDate()).padStart(2, '0');
+        const hh = String(now.getHours()).padStart(2, '0');
+        const mm = String(now.getMinutes()).padStart(2, '0');
+
+        input.value = `${yyyy}-${MM}-${dd}T${hh}:${mm}`;
+
+        loadFormData();
+      });
+
+      function loadFormData() {
+        fetch('/api/admin/message-reservations/form')
+        .then(res => res.json())
+        .then(data => {
+          renderUserGroups(data.userGroups);
+          renderTemplates(data.templates);
+        });
+      }
+
+      function renderUserGroups(groups) {
+        const select = document.getElementById('userGroupSelect');
+        select.innerHTML = '';
+
+        groups.forEach(g => {
+          const option = document.createElement('option');
+          option.value = g.id;
+          option.textContent = g.name;
+          select.appendChild(option);
+        });
+      }
+
+      function renderTemplates(templates) {
+        const select = document.getElementById('templateSelect');
+        select.innerHTML = '';
+
+        templates.forEach(t => {
+          const option = document.createElement('option');
+          option.value = t.id;
+          option.textContent = `${t.name} (${t.channelTypeCode})`;
+          select.appendChild(option);
+        });
+      }
+
+      function submitReservation() {
+        const payload = {
+          userGroupId: document.getElementById('userGroupSelect').value,
+          templateId: document.getElementById('templateSelect').value,
+          scheduledAt: document.getElementById('scheduledAt').value
+          // scheduledAt: document.querySelector('input[type="datetime-local"]').value
+        };
+
+        fetch('/api/admin/message-reservations', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        })
+        .then(async res => {
+          if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || '예약 등록 실패');
+          }
+          alert('예약 발송이 등록되었습니다.');
+          location.href = '/admin/schedule';
+        })
+        .catch(err => alert(err.message));
+      }
+    </script>
+  </th:block>
 </html>
