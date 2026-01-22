@@ -1,6 +1,5 @@
 package com.example.adminweb.domain.message;
 
-import java.time.LocalDateTime;
 import com.example.adminweb.domain.code.Code;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -11,6 +10,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import java.time.LocalDateTime;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -23,6 +23,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MessageReservation {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
@@ -40,7 +41,7 @@ public class MessageReservation {
   @ManyToOne(fetch = FetchType.LAZY)
   @JoinColumn(name = "user_group_id", nullable = false)
   private com.example.adminweb.domain.user.UserGroup userGroup;
-  @Column(name = "target_month", nullable = false, length = 7)
+  @Column(name = "target_month", nullable = true, length = 7)
   private String targetMonth;
 
   @Builder
