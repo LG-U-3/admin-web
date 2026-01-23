@@ -1,8 +1,10 @@
 package com.example.adminweb.controller;
 
 import com.example.adminweb.dto.user.UserGroupListResponse;
+import com.example.adminweb.dto.user.UserGroupRequest;
 import com.example.adminweb.dto.user.UserGroupUserResponse;
 import com.example.adminweb.service.UserGroupService;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -10,6 +12,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -33,6 +38,12 @@ public class UserGroupController {
         Sort.by("id").descending()
     );
     return userGroupService.getUserGroups(keyword, pageable);
+  }
+
+  @PostMapping
+  public Map<String, Long> create(@RequestBody UserGroupRequest request) {
+    Long groupId = userGroupService.createUserGroup(request);
+    return Map.of("groupId", groupId);
   }
 
   @GetMapping("/{groupId}/users")

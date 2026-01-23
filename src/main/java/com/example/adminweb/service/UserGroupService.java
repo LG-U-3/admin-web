@@ -1,15 +1,19 @@
 package com.example.adminweb.service;
 
+import com.example.adminweb.domain.user.User;
 import com.example.adminweb.domain.user.UserGroup;
 import com.example.adminweb.domain.user.UserUserGroup;
 import com.example.adminweb.dto.user.UserGroupDetailResponse;
 import com.example.adminweb.dto.user.UserGroupListResponse;
+import com.example.adminweb.dto.user.UserGroupRequest;
 import com.example.adminweb.dto.user.UserGroupUserResponse;
 import com.example.adminweb.repository.UserGroupRepository;
+import com.example.adminweb.repository.UserRepository;
 import com.example.adminweb.repository.UserUserGroupRepository;
 import com.example.adminweb.repository.spec.UserGroupSpec;
 import com.example.adminweb.repository.spec.UserUserGroupSpec;
 import jakarta.persistence.criteria.JoinType;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -23,6 +27,7 @@ public class UserGroupService {
 
   private final UserGroupRepository userGroupRepository;
   private final UserUserGroupRepository userUserGroupRepository;
+  private final UserRepository userRepository;
 
   public Page<UserGroupListResponse> getUserGroups(
       String keyword,
@@ -81,4 +86,29 @@ public class UserGroupService {
         .description(group.getDescription())
         .build();
   }
+
+  @Transactional
+  public Long createUserGroup(UserGroupRequest request) {
+    UserGroup userGroup = UserGroup.builder()
+        .code(request.getCode())
+        .name(request.getName())
+        .description(request.getDescription())
+        .build();
+
+    userGroupRepository.save(userGroup);
+
+    if (request.getUserIds() != null && !request.getUserIds().isEmpty()) {
+      List<User> users = userRepository.findAllById(request.getUserIds());
+      for (User user : users) {
+        UserUserGroup userUserGroup = UserUserGroup.builder()
+            .userGroup(userGroup)
+            .user(user)
+            .build();
+        userUserGroupRepository.save(userUserGroup);
+      }
+    }
+
+    return userGroup.getId();
+  }
+
 }
