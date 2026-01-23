@@ -10,70 +10,125 @@
       </div>
     </div>
     <div class="bd">
-      <div class="form">
-        <div class="field span-3">
-          <label>템플릿 ID</label>
-          <input value="TPL-0001" disabled/>
-        </div>
-        <div class="field span-3">
-          <label>템플릿 타입</label>
-          <select id="tplType">
-            <option value="EMAIL" selected>EMAIL</option>
-            <option value="SMS">SMS</option>
-          </select>
-        </div>
-        <div class="field span-3">
-          <label>템플릿명</label>
-          <input value="monthly_bill_v1"/>
-        </div>
-
-        <div class="field span-12" id="emailSubjectField">
-          <label>제목 (이메일)</label>
-          <input value="[요금명세서] {billingMonth}월 청구 금액 안내"/>
-        </div>
-
-        <div class="field span-12">
-          <label>본문</label>
-          <textarea id="tplBody">
-안녕하세요 {userName}님,
-{billingMonth}월 최종 청구 금액은 {amount}원 입니다.
-(사용요금: {usageAmount}, 할인: {discountAmount})
-
-감사합니다.</textarea>
-        </div>
-
-        <div class="field span-6">
-          <label>변수 목록</label>
-          <div class="code">
-            {userName} {billingMonth} {usageAmount} {discountAmount} {amount}
+      <form th:action="@{/api/admin/message-templates/{code}/edit(code=${templateRequest.code})}"
+            th:object="${templateRequest}" method="post">
+        <div class="form">
+          <div class="field span-3">
+            <label>템플릿 ID (코드)</label>
+            <input th:field="*{code}"/></div>
+          <div class="field span-3">
+            <label>템플릿 타입</label>
+            <select th:field="*{channelTypeId}" id="tplType">
+              <option th:each="type : ${channelTypes}"
+                      th:value="${type.id}"
+                      th:text="${type.code}"></option>
+            </select>
           </div>
-          <div class="help">
-            변수 치환은 서버에서 템플릿 엔진(예: Thymeleaf, Freemarker 등) 또는
-            자체 치환 로직으로 처리.
+          <div class="field span-3">
+            <label>템플릿명</label>
+            <input th:field="*{name}" required/>
           </div>
-        </div>
+          <div class="field span-3">
+            <label>목적 타입</label>
+            <select th:field="*{purposeTypeId}" id="purposeType">
+              <option th:each="purpose : ${purposeTypes}"
+                      th:value="${purpose.id}"
+                      th:text="${purpose.code}"></option>
+            </select>
+          </div>
 
-        <div class="field span-6">
-          <label>미리보기</label>
-          <div class="code" id="previewBox"></div>
-          <div class="row" style="justify-content: flex-end; margin-top: 10px">
-            <button class="btn" type="button" data-action="preview">
-              미리보기 갱신
-            </button>
+          <div class="field span-12" id="emailSubjectField">
+            <label>제목 (이메일)</label>
+            <input th:field="*{title}" placeholder="[요금명세서] {billingMonth}월 청구 금액 안내"/>
           </div>
-        </div>
 
-        <div class="field span-12">
-          <div class="row" style="justify-content: flex-end">
-            <a class="btn" th:href="@{/admin/templates}">목록</a>
-            <button class="btn primary" type="button" data-alert="샘플: 저장 API 호출">
-              저장
-            </button>
+          <div class="field span-12">
+            <label>본문</label>
+            <textarea th:field="*{body}" id="tplBody"></textarea>
+          </div>
+
+          <div class="field span-6">
+            <label>변수 목록 (JSON 입력)</label>
+            <textarea th:field="*{variablesJson}" id="variablesJson" class="code"
+                      style="height: 110px;"></textarea>
+            <div class="help">
+              변수 치환은 서버에서 템플릿 엔진 또는 자체 치환 로직으로 처리.
+            </div>
+          </div>
+
+          <div class="field span-6">
+            <label>미리보기</label>
+            <div class="code" id="previewBox" style="height: 110px; overflow-y: auto;"></div>
+            <div class="row" style="justify-content: flex-end; margin-top: 10px">
+              <button class="btn" type="button" data-action="preview">
+                미리보기 갱신
+              </button>
+            </div>
+          </div>
+
+          <div class="field span-12">
+            <div class="row" style="justify-content: flex-end">
+              <a class="btn" th:href="@{/admin/templates}">목록</a>
+              <button class="btn primary" type="submit">
+                저장 (수정)
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </div>
   </div>
 </section>
-  <th:block th:fragment="scripts"></th:block>
+
+<th:block th:fragment="scripts">
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const bodyArea = document.getElementById('tplBody');
+      const variablesArea = document.getElementById('variablesJson');
+      const previewBox = document.getElementById('previewBox');
+      const previewBtn = document.querySelector('[data-action="preview"]');
+      const tplTypeSelect = document.getElementById('tplType');
+      const subjectField = document.getElementById('emailSubjectField');
+
+      // 미리보기 로직 (template-create와 동일)
+      function updatePreview() {
+          let content = bodyArea.value;
+          const jsonStr = variablesArea.value;
+
+          if (!content.trim()) {
+            previewBox.innerText = "본문 내용이 없습니다.";
+            return;
+          }
+
+          try {
+            if (jsonStr.trim()) {
+              const userData = JSON.parse(jsonStr);
+              Object.keys(userData).forEach(key => {
+                const regex = new RegExp(`\\{${key}\\}`, 'g');
+                content = content.replace(regex, userData[key]);
+              });
+            }
+            previewBox.innerText = content;
+          } catch (e) {
+            alert("변수 목록(JSON) 형식이 올바르지 않습니다.");
+          }
+      }
+
+      if (previewBtn) previewBtn.addEventListener('click', updatePreview);
+
+      // 초기 이메일 제목 필드 노출 제어
+      const toggleSubject = () => {
+          const selectedText = tplTypeSelect.options[tplTypeSelect.selectedIndex].text;
+          subjectField.style.display = selectedText.includes('EMAIL') ? 'block' : 'none';
+      };
+
+      if (tplTypeSelect) {
+          tplTypeSelect.addEventListener('change', toggleSubject);
+          toggleSubject(); // 초기 로드 시 실행
+      }
+
+      updatePreview(); // 초기 데이터로 미리보기 실행
+    });
+  </script>
+</th:block>
 </html>
