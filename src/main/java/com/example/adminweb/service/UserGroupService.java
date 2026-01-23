@@ -14,6 +14,7 @@ import com.example.adminweb.repository.spec.UserGroupSpec;
 import com.example.adminweb.repository.spec.UserUserGroupSpec;
 import jakarta.persistence.criteria.JoinType;
 import java.util.List;
+import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -73,6 +74,12 @@ public class UserGroupService {
     );
   }
 
+  public List<Long> getUserIdsByGroup(Long groupId) {
+    return userUserGroupRepository.findAllByUserGroupId(groupId).stream()
+        .map(uug -> uug.getUser().getId())
+        .collect(Collectors.toList());
+  }
+
   public UserGroupDetailResponse getUserGroupDetail(
       Long groupId
   ) {
@@ -109,6 +116,29 @@ public class UserGroupService {
     }
 
     return userGroup.getId();
+  }
+
+  @Transactional
+  public void updateUserGroup(Long groupId, UserGroupRequest request) {
+    UserGroup userGroup = userGroupRepository.findById(groupId)
+        .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사용자 그룹"));
+
+    userGroup.update(request.getCode(), request.getName(), request.getDescription());
+
+    // 기존 매핑 삭제
+    userUserGroupRepository.deleteByUserGroupId(groupId);
+
+    // 새 매핑 추가
+    if (request.getUserIds() != null && !request.getUserIds().isEmpty()) {
+      List<User> users = userRepository.findAllById(request.getUserIds());
+      for (User user : users) {
+        UserUserGroup userUserGroup = UserUserGroup.builder()
+            .userGroup(userGroup)
+            .user(user)
+            .build();
+        userUserGroupRepository.save(userUserGroup);
+      }
+    }
   }
 
 }

@@ -232,12 +232,19 @@
           alert("그룹 저장에 실패했습니다.");
           return;
         }
-        const data = await response.json();
-        if (data?.groupId) {
-          window.location.href = `/admin/user-groups/${data.groupId}`;
-          return;
+
+        if (groupId) {
+            alert("그룹 수정이 완료되었습니다.");
+            window.location.href = `/admin/user-groups/${groupId}`;
+        } else {
+            const data = await response.json();
+            if (data?.groupId) {
+                alert("그룹 등록이 완료되었습니다.");
+                window.location.href = `/admin/user-groups/${data.groupId}`;
+            } else {
+                alert("그룹 저장이 완료되었습니다.");
+            }
         }
-        alert("그룹 저장이 완료되었습니다.");
       });
 
       // Initial fetch to show users immediately
