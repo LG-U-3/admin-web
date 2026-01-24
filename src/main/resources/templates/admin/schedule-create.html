@@ -141,9 +141,12 @@
         })
         .then(async res => {
           if (!res.ok) {
-            const msg = await res.text();
-            throw new Error(msg || '예약 등록 실패');
+            if (res.status === 400 || res.status === 500) {
+              throw new Error('과거 시간은 예약할 수 없습니다.');
+            }
+            throw new Error('예약 등록 실패');
           }
+
           alert('예약 발송이 등록되었습니다.');
           location.href = '/admin/schedule';
         })
