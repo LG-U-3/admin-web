@@ -60,4 +60,12 @@ public class CodeService {
         )
         .toList();
   }
+
+  public List<Code> getChannelTypes() {
+    return codeRepository.findAllByCodeGroupCode("MESSAGE_CHANNEL");
+  }
+
+  public List<Code> getPurposeTypes() {
+    return codeRepository.findAllByCodeGroupCode("MESSAGE_PURPOSE");
+  }
 }
