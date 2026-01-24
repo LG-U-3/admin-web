@@ -7,7 +7,9 @@ import com.example.adminweb.dto.message.MessageTemplateListResponse;
 import com.example.adminweb.dto.user.UserGroupDetailResponse;
 import com.example.adminweb.dto.user.UserGroupListResponse;
 import com.example.adminweb.dto.user.UserGroupUserResponse;
+import com.example.adminweb.repository.projection.MessageRetryViewProjection;
 import com.example.adminweb.service.CodeService;
+import com.example.adminweb.service.MessageService;
 import com.example.adminweb.service.MessageTemplateService;
 import com.example.adminweb.service.UplusServiceService;
 import com.example.adminweb.service.UserGroupService;
@@ -36,7 +38,7 @@ public class AdminPageController {
   private final MessageTemplateService messageTemplateService;
   private final CodeService codeService;
   private final UplusServiceService uplusServiceService;
-
+  private final MessageService messageService;
 
   @GetMapping("/admin")
   public String demoRoot() {
@@ -72,9 +74,31 @@ public class AdminPageController {
   }
 
   @GetMapping("/admin/messages/retry")
-  public String messageRetry(Model model) {
+  public String messageRetry(
+      @RequestParam(defaultValue = "0") int page,
+      @RequestParam(defaultValue = "100") int size,
+      Model model
+  ) {
     setPage(model, "Billing System Admin - 메시지 재시도 관리", "메시지 재시도 관리",
         "message-retry", "실패 메시지 관리");
+
+    Page<MessageRetryViewProjection> messagePage =
+        messageService.findRetryableMessages(
+            PageRequest.of(page, size)
+        );
+
+    long total = messagePage.getTotalElements();
+    long start = page * size + 1;
+    long end = Math.min((page + 1L) * size, total);
+
+    model.addAttribute("messages", messagePage.getContent());
+    model.addAttribute("messagePage", messagePage);
+    model.addAttribute("page", page);
+    model.addAttribute("size", size);
+    model.addAttribute("total", total);
+    model.addAttribute("start", start);
+    model.addAttribute("end", end);
+
     return "admin/message-retry";
   }
 
