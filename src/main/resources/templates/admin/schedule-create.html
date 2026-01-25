@@ -20,9 +20,6 @@
               <option>Segment-A</option>
               <option>Segment-B</option>
             </select>
-<!--            <div class="help">-->
-<!--              실제 구현에서는 그룹 정의/필터(요금제/지역/가입기간 등) 구성 가능.-->
-<!--            </div>-->
           </div>
           <div class="field span-6">
             <label>템플릿 선택</label>
@@ -37,20 +34,6 @@
             <label>발송 예정 일시</label>
             <input id="scheduledAt" type="datetime-local"/>
           </div>
-<!--          <div class="field span-6">-->
-<!--            <label>상태</label>-->
-<!--            <select>-->
-<!--              <option selected>대기</option>-->
-<!--              <option>취소</option>-->
-<!--            </select>-->
-<!--          </div>-->
-
-<!--          <div class="field span-12">-->
-<!--            <label>메모(운영자용)</label>-->
-<!--            <textarea-->
-<!--              placeholder="예: VIP 대상 월별 정산 안내 / 장애 복구 후 재공지"-->
-<!--            ></textarea>-->
-<!--          </div>-->
 
           <div class="field span-12">
             <div class="row" style="justify-content: flex-end">
@@ -62,13 +45,6 @@
           </div>
         </div>
 
-        <div class="divider"></div>
-
-        <div class="help">
-          예약 발송 처리 흐름 예시: Scheduler가 예약 테이블을 폴링/트리거 → Queue
-          적재 → 메시지 워커 발송 → 결과 이력 적재.
-        </div>
-      </div>
     </div>
   </section>
   <th:block th:fragment="scripts">

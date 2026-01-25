@@ -111,6 +111,7 @@ public class MessageReservationService {
     // 2. 메시지 템플릿 조회
     List<MessageTemplateListResponse> templates =
         messageTemplateRepository.findAll().stream()
+            .filter(t -> !t.getPurposeType().getId().equals(14L))
             .map(t -> MessageTemplateListResponse.builder()
                 .id(t.getId())
                 .code(t.getCode())
