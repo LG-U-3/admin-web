@@ -80,6 +80,9 @@
               <table>
                 <thead>
                 <tr>
+                  <th class="nowrap" style="width: 40px; text-align: center;">
+                    <input type="checkbox" id="select-all-checkbox">
+                  </th>
                   <th class="nowrap">이름</th>
                   <th>이메일</th>
                   <th class="nowrap">연락처</th>
@@ -87,10 +90,18 @@
                 </thead>
                 <tbody id="user-search-results">
                 <tr>
-                  <td class="nowrap" colspan="3" style="text-align: center">검색 결과가 없습니다.</td>
+                  <td class="nowrap" colspan="4" style="text-align: center">검색 결과가 없습니다.</td>
                 </tr>
                 </tbody>
               </table>
+            </div>
+            <div class="pagination" id="user-pagination-controls" style="display: none;">
+              <div class="page-info">총 <span id="total-users">0</span>건 중 <span id="current-range">0-0</span>건</div>
+              <div class="page-nav">
+                <button class="btn" type="button" id="prev-page">이전</button>
+                <div id="page-numbers" style="display: inline-flex; gap: 5px;"></div>
+                <button class="btn" type="button" id="next-page">다음</button>
+              </div>
             </div>
           </div>
         </div>
@@ -101,14 +112,11 @@
       <div class="row" style="justify-content: space-between">
         <a class="btn" th:href="@{/admin/user-groups}">목록으로</a>
         <div class="row">
-          <button class="btn" type="button" data-alert="샘플: 수정 취소">
+          <a class="btn" th:href="@{/admin/user-groups}">
             취소
-          </button>
+          </a>
           <button id="save-group" class="btn primary" type="button">
             저장
-          </button>
-          <button class="btn bad" type="button" data-alert="샘플: 그룹 삭제">
-            삭제
           </button>
         </div>
       </div>

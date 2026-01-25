@@ -9,4 +9,8 @@ public class UserSearchResponse {
 
   private Long userId;
   private String name;
+  private String email;
+  private String phone;
+
+  private Long searchServiceId;
 }

@@ -36,5 +36,10 @@ public class UserGroup {
         this.name = name;
         this.description = description;
     }
-}
 
+    public void update(String code, String name, String description) {
+        this.code = code;
+        this.name = name;
+        this.description = description;
+    }
+}

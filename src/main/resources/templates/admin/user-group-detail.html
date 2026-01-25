@@ -96,21 +96,29 @@
               </div>
 
               <div class="page-nav">
+
                 <a class="btn"
                    th:if="${userPage.hasPrevious()}"
                    th:href="@{/admin/user-groups/{id}(id=${group.groupId}, page=${page-1}, size=${size})}">
                   이전
                 </a>
 
-                <span class="btn active"
-                      th:text="${page + 1}">
-                </span>
+                <a class="btn"
+                   th:each="i : ${#numbers.sequence(
+        T(java.lang.Math).max(0, page - 2),
+        T(java.lang.Math).min(userPage.totalPages - 1, page + 2)
+     )}"
+                   th:classappend="${i == page} ? 'active'"
+                   th:text="${i + 1}"
+                   th:href="@{/admin/user-groups/{id}(id=${group.groupId}, page=${i}, size=${size})}">
+                </a>
 
                 <a class="btn"
                    th:if="${userPage.hasNext()}"
                    th:href="@{/admin/user-groups/{id}(id=${group.groupId}, page=${page+1}, size=${size})}">
                   다음
                 </a>
+
               </div>
             </div>
 
@@ -131,17 +139,11 @@
            th:href="@{/admin/user-groups/{id}/edit(id=${group.groupId})}">
           수정
         </a>
-
-        <button class="btn bad"
-                type="button"
-                data-alert="사용자 그룹 삭제">
-          삭제
-        </button>
       </div>
 
     </div>
   </div>
 </section>
 
-  <th:block th:fragment="scripts"></th:block>
+<th:block th:fragment="scripts"></th:block>
 </html>
