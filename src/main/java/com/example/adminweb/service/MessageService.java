@@ -14,6 +14,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionSynchronization;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 @RequiredArgsConstructor
@@ -53,13 +55,24 @@ public class MessageService {
             waitingStatusId
         );
 
-    for (MessagePublishProjection target : publishTargets) {
-      messageStreamProducer.publish(
-          target.getMessageSendResultId(),
-          target.getChannelCode(),
-          target.getPurposeCode()
-      );
+    if (publishTargets.isEmpty()) {
+      return;
     }
+
+    TransactionSynchronizationManager.registerSynchronization(
+        new TransactionSynchronization() {
+          @Override
+          public void afterCommit() {
+            for (MessagePublishProjection target : publishTargets) {
+              messageStreamProducer.publish(
+                  target.getMessageSendResultId(),
+                  target.getChannelCode(),
+                  target.getPurposeCode()
+              );
+            }
+          }
+        }
+    );
   }
 
   @Transactional(readOnly = true)
