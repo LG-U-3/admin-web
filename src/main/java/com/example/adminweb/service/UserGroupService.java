@@ -12,7 +12,6 @@ import com.example.adminweb.repository.UserRepository;
 import com.example.adminweb.repository.UserUserGroupRepository;
 import com.example.adminweb.repository.spec.UserGroupSpec;
 import com.example.adminweb.repository.spec.UserUserGroupSpec;
-import jakarta.persistence.criteria.JoinType;
 import java.util.List;
 import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
@@ -58,7 +57,6 @@ public class UserGroupService {
     Page<UserUserGroup> page =
         userUserGroupRepository.findAll(
             (root, query, cb) -> {
-              root.fetch("user", JoinType.INNER);
               query.distinct(true);
               return UserUserGroupSpec.groupId(groupId)
                   .toPredicate(root, query, cb);
