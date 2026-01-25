@@ -13,5 +13,9 @@ public interface CodeRepository extends JpaRepository<Code, Long> {
 
   Optional<Code> findByCode(String code);
 
+
+  Optional<Code> findByCodeAndCodeGroup_Code(String code, String codeGroupCode);
+
   List<Code> findAllByCodeGroupCode(String groupCode);
+
 }
