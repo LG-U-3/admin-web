@@ -2,6 +2,8 @@ package com.example.adminweb.controller;
 
 import com.example.adminweb.dto.code.CodeGroupResponse;
 import com.example.adminweb.dto.code.CodeResponse;
+import com.example.adminweb.dto.message.MessageHistorySearch;
+import com.example.adminweb.dto.message.MessageSendResultResponse;
 import com.example.adminweb.dto.message.MessageTemplateCreateRequest;
 import com.example.adminweb.dto.message.MessageTemplateListResponse;
 import com.example.adminweb.dto.user.UserGroupDetailResponse;
@@ -9,6 +11,7 @@ import com.example.adminweb.dto.user.UserGroupListResponse;
 import com.example.adminweb.dto.user.UserGroupUserResponse;
 import com.example.adminweb.repository.projection.MessageRetryViewProjection;
 import com.example.adminweb.service.CodeService;
+import com.example.adminweb.service.MessageSendResultService;
 import com.example.adminweb.service.MessageService;
 import com.example.adminweb.service.MessageTemplateService;
 import com.example.adminweb.service.UplusServiceService;
@@ -18,7 +21,9 @@ import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -39,6 +44,7 @@ public class AdminPageController {
   private final CodeService codeService;
   private final UplusServiceService uplusServiceService;
   private final MessageService messageService;
+  private final MessageSendResultService messageSendResultService;
 
   @GetMapping("/admin")
   public String demoRoot() {
@@ -67,9 +73,19 @@ public class AdminPageController {
   }
 
   @GetMapping("/admin/messages/history")
-  public String messageHistory(Model model) {
+  public String messageHistory(
+      MessageHistorySearch search,
+      @PageableDefault(size = 100) Pageable pageable, Model model) {
     setPage(model, "Billing System Admin - 메시지 발송 이력 조회", "메시지 발송 이력 조회",
         "message-history", "발송 이력 검색");
+
+    Page<MessageSendResultResponse> page =
+        messageSendResultService.search(search, pageable);
+
+    model.addAttribute("search", search);
+    model.addAttribute("page", page);
+    model.addAttribute("results", page.getContent());
+
     return "admin/message-history";
   }
 
