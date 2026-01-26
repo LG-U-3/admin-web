@@ -48,15 +48,15 @@ public class AdminPageController {
 
   @GetMapping("/admin")
   public String demoRoot() {
-    return "redirect:/admin/dashboard";
+    return "redirect:/admin/batch";
   }
 
-  @GetMapping("/admin/dashboard")
-  public String dashboard(Model model) {
-    setPage(model, "Billing System Admin - 운영 현황 / 관리", "관리자 대시보드", "dashboard",
-        "실시간 운영 요약");
-    return "admin/dashboard";
-  }
+//  @GetMapping("/admin/dashboard")
+//  public String dashboard(Model model) {
+//    setPage(model, "Billing System Admin - 운영 현황 / 관리", "관리자 대시보드", "dashboard",
+//        "실시간 운영 요약");
+//    return "admin/dashboard";
+//  }
 
   @GetMapping("/admin/batch")
   public String batch(Model model) {
@@ -65,12 +65,12 @@ public class AdminPageController {
     return "admin/batch";
   }
 
-  @GetMapping("/admin/settlement")
-  public String settlement(Model model) {
-    setPage(model, "Billing System Admin - 정산서 데이터 조회", "정산서 데이터 조회", "settlement",
-        "정산 결과 검색");
-    return "admin/settlement";
-  }
+//  @GetMapping("/admin/settlement")
+//  public String settlement(Model model) {
+//    setPage(model, "Billing System Admin - 정산서 데이터 조회", "정산서 데이터 조회", "settlement",
+//        "정산 결과 검색");
+//    return "admin/settlement";
+//  }
 
   @GetMapping("/admin/messages/history")
   public String messageHistory(
