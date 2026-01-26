@@ -12,7 +12,7 @@
     <div class="bd">
       <form th:action="@{/admin/templates}" th:object="${templateRequest}" method="post">
         <div class="form">
-          <div class="field span-4">
+          <div class="field span-3">
             <label>템플릿 타입</label>
             <select th:field="*{channelTypeId}" id="tplType">
               <option value="">선택하세요</option>
@@ -20,12 +20,16 @@
                       th:text="${type.code}"></option>
             </select>
           </div>
-          <div class="field span-4">
-            <label>템플릿명</label>
-            <input th:field="*{name}" placeholder="예: monthly_bill_v3" required/>
-            <input type="hidden" th:field="*{code}" id="hiddenCode"/>
+          <div class="field span-3">
+            <label>템플릿 코드</label>
+            <input th:field="*{code}" placeholder="예: monthly_bill_v1" required
+                   th:readonly="${title == '템플릿 수정'}"/>
           </div>
-          <div class="field span-4">
+          <div class="field span-3">
+            <label>템플릿명</label>
+            <input th:field="*{name}" placeholder="예: 월간 청구서 템플릿" required/>
+          </div>
+          <div class="field span-3">
             <label>목적 타입</label>
             <select th:field="*{purposeTypeId}" id="purposeType" required>
               <option value="">선택하세요</option>
@@ -116,10 +120,6 @@
             alert("변수 목록(JSON) 형식이 올바르지 않습니다. 큰따옴표(\")를 사용했는지 확인하세요.");
           }
         });
-      }
-
-      if (nameInput && hiddenCode) {
-        nameInput.addEventListener('input', () => hiddenCode.value = nameInput.value);
       }
 
       // 템플릿 타입에 따른 제목 필드 노출 제어
