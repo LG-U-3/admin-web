@@ -2,8 +2,6 @@
       const saveButton = document.getElementById("save-group");
       const searchButton = document.getElementById("search-users");
       const searchName = document.getElementById("search-name");
-      const searchPhone = document.getElementById("search-phone");
-      const searchPlan = document.getElementById("search-plan");
       const resultsBody = document.getElementById("user-search-results");
       const groupCode = document.getElementById("group-code");
       const groupName = document.getElementById("group-name");
@@ -176,12 +174,6 @@
         const query = new URLSearchParams();
         if (searchName.value.trim()) {
           query.set("name", searchName.value.trim());
-        }
-        if (searchPhone.value.trim()) {
-          query.set("phone", searchPhone.value.trim());
-        }
-        if (searchPlan.value) {
-          query.set("serviceCode", searchPlan.value);
         }
         
         query.set("page", page);

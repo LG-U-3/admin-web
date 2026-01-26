@@ -47,23 +47,9 @@
           </div>
           <div class="bd">
             <div class="form">
-              <div class="field span-4">
+              <div class="field span-12">
                 <label>이름</label>
                 <input id="search-name" placeholder="예: 김민지"/>
-              </div>
-              <div class="field span-4">
-                <label>연락처</label>
-                <input id="search-phone" placeholder="010-0000-0000"/>
-              </div>
-              <div class="field span-4">
-                <label>요금제</label>
-                <select id="search-plan">
-                  <option value="">전체</option>
-                  <option th:each="service : ${uplusServices}"
-                          th:value="${service.code}"
-                          th:text="${service.name}">
-                  </option>
-                </select>
               </div>
               <div class="field span-12">
                 <div class="row" style="justify-content: flex-end">
